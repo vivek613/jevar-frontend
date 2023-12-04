@@ -1,0 +1,9 @@
+.hovered {
+  transition: opacity 0.3s ease-in-out; 
+  opacity: 0.5; 
+}
+
+.hovered:hover {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}

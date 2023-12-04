@@ -1,0 +1,9 @@
+export const NORMAL_USER_LOGIN = "NORMAL_USER_LOGIN";
+export const NORMAL_USER_LOGOUT = "NORMAL_USER_LOGOUT";
+
+export const MAIN_USER_LOGIN = "MAIN_USER_LOGIN";
+export const MAIN_USER_LOGOUT = "MAIN_USER_LOGOUT";
+
+export const MENU_ACTION = "MENU_ACTION";
+
+export const LOADER = "LOADER";
