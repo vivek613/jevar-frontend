@@ -14,6 +14,10 @@ const LINKS = [
     title: "System",
     items: ["Login", "Register"],
   },
+  {
+    title: "Sales",
+    items: ["SalesLogin", "SalesRegister"],
+  },
 ];
 
 const currentYear = new Date().getFullYear();
@@ -48,7 +52,11 @@ const Footer: React.FC<FooterInterface> = () => {
                           ? "/login"
                           : link == "About us"
                           ? "/about"
-                          : "/"
+                          :  link == "SalesRegister"
+                          ?"/register-sales"
+                          : link == "SalesLogin"
+                          ?"/login-sales"
+                          :"/"
                       }
                     >
                       <Typography
