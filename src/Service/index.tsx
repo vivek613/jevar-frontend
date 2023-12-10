@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setLoader } from "../Stores/actions/loader";
-// const BASE_URL = "https://jevar-bazaar.onrender.com";
-const BASE_URL = "http://localhost:8100";
+const BASE_URL = "https://jevar-backend-4j8y.onrender.com";
+// const BASE_URL = "http://localhost:8100";
 export const Image_URL = "";
 
 const apiUrl = process.env.REACT_APP_API_URL;
