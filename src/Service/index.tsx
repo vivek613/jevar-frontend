@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setLoader } from "../Stores/actions/loader";
-const BASE_URL = "https://jevar-bazaar.onrender.com";
-// const BASE_URL = "http://192.168.0.104:8100";
+// const BASE_URL = "https://jevar-bazaar.onrender.com";
+const BASE_URL = "http://localhost:8100";
 export const Image_URL = "";
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -370,6 +370,32 @@ export const API = {
       console.log(err);
     }
   },
+  Common_add_Image: async (
+    body: object,
+
+    dispatch: any
+  ) => {
+    console.log("data", body);
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "multipart/form-data",
+        // Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.post(
+        `${BASE_URL}/api/v1/salesUser/add_image`,
+        body,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      dispatch(setLoader(false));
+      console.log(err);
+    }
+  },
   normalUser_get_product: async (token: any, id: string, dispatch: any) => {
     dispatch(setLoader(true));
     try {
@@ -615,7 +641,7 @@ export const API = {
         "content-type": "application/json",
       };
       const data = await axios.post(
-        `${BASE_URL}/api/v1/mainUser/confirm`,
+        `${BASE_URL}/api/v1/salesUser/confirm`,
         body,
         {
           headers: headers,
@@ -650,9 +676,13 @@ export const API = {
       const headers = {
         "content-type": "application/json",
       };
-      const data = await axios.post(`${BASE_URL}/api/v1/salesUser/login`, body, {
-        headers: headers,
-      });
+      const data = await axios.post(
+        `${BASE_URL}/api/v1/salesUser/login`,
+        body,
+        {
+          headers: headers,
+        }
+      );
       dispatch(setLoader(false));
       return data;
     } catch (err) {
@@ -701,6 +731,26 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
+  salesUser_associated_jeweller: async (id: any, token: any, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.get(
+        `${BASE_URL}/api/v1/salesUser/get_associate_user/${id}`,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
   mainUser_getProduct: async (token: any, dispatch: any) => {
     dispatch(setLoader(true));
     try {
@@ -709,6 +759,26 @@ export const API = {
       };
       const data = await axios.get(
         `${BASE_URL}/api/v1/mainUser/customer/get_product`,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
+
+  salesUser_get: async (dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+      };
+      const data = await axios.get(
+        `${BASE_URL}/api/v1/salesUser/getSalesUser`,
         {
           headers: headers,
         }
@@ -772,6 +842,46 @@ export const API = {
       const data = await axios.get(`${BASE_URL}/api/v1/jeweller-pay/get`, {
         headers: headers,
       });
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
+  User_fetchMonthIncome: async (token: any, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.get(
+        `${BASE_URL}/api/v1/salesUser/get_month_income`,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
+  User_fetchPaymentDue: async (token: any, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.get(
+        `${BASE_URL}/api/v1/salesUser/user_payment_due`,
+        {
+          headers: headers,
+        }
+      );
       dispatch(setLoader(false));
       return data;
     } catch (err) {

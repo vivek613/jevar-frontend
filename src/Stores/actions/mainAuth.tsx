@@ -13,3 +13,4 @@ export const logout = (user: any) => {
     payload: user,
   };
 };
+

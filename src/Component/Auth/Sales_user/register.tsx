@@ -15,10 +15,12 @@ import { login } from "../../../Stores/actions/mainAuth";
 import OTPInput from "../../OTPInput";
 import { API } from "../../../Service";
 import { setLoader } from "../../../Stores/actions/loader";
+import { loginSales } from "../../../Stores/actions/salesAuth";
 
 interface RegisterInterface {}
 
 const SalesRegister: React.FC<RegisterInterface> = () => {
+
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const [name, setName] = useState("");
@@ -33,17 +35,21 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
   const [otp, setOtp] = useState("");
   const [time, settime] = useState(30);
   const [validMobile, setValidMobile] = useState(false);
-  const[bankDeatails,setBankDeatils]=useState({
-    bankNumber:"",
-    bankIfscCode:""
-  })
+  const [aadharImage, setAadharImage] = React.useState<any>();
+  const [pandCardImage, setPanCardImage] = React.useState("");
+  const [profileImage, setProfileImage] = React.useState();
+
+
+  const [bankDeatails, setBankDeatils] = useState({
+    bankNumber: "",
+    bankIfscCode: "",
+  });
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => setOpen(!open);
 
-
-
   const mobileValidation = () => {
+    
     const regex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
     if (regex.test(mobile)) {
       setValidMobile(false);
@@ -83,19 +89,24 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
   const verify = async () => {
     const body = {
       name: name,
-      email: email,
+     
       mobile: mobile,
       address: address,
       city: city,
       state: state,
       pincode: pincode,
       password: password,
+      profileimage:profileImage,
+      pancardimage:pandCardImage,
+      adharcardimage:aadharImage,
+      bankifsc:bankDeatails?.bankIfscCode,
+      banknumber:bankDeatails?.bankNumber,
       otp: otp,
     };
     await API.salesUser_verify(body, dispatch)
       .then((response) => {
         toast.success(response?.data.message);
-        dispatch(login(response?.data.data));
+        dispatch(loginSales(response?.data.data));
         navigation("/");
       })
       .catch((err) => {
@@ -106,13 +117,12 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
 
   const register = async () => {
     const body = {
-     
       mobile: mobile,
     };
-    await API.salesUser_verify(body, dispatch)
+    await API.salesUser_Register(body, dispatch)
       .then((response) => {
         toast.success(response?.data.message);
-        alert(response?.data.message);
+        // alert(response?.data.message);
         handleOpen();
       })
       .catch((err) => {
@@ -120,18 +130,75 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
         console.log(err);
       });
   };
+  const addProductImage = async (data: any,type:any) => {
+    await API.Common_add_Image(
+      data,
+      dispatch
+    )
+      .then((response) => {
+       if(type===1){
+        setPanCardImage(response?.data?.data?.thumbnail)
 
+       }else if(type===2){
+        setProfileImage(response?.data?.data?.thumbnail)
+
+       }else{
+        setAadharImage(response?.data?.data?.thumbnail)
+
+       }
+        toast.success(response?.data.message);
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const onImageChange = (event: any) => {
+    if (event.target.files && event.target.files[0]) {
+      const img = event.target.files[0];
+
+
+      const data = new FormData();
+      data&&data.append("image", img);
+      console.log("img",data.get("image"))
+
+      addProductImage(data,0);
+    }
+    
+  };
+  const onPanChange = (event: any) => {
+    if (event.target.files && event.target.files[0]) {
+      const img = event.target.files[0];
+      const data = new FormData();
+      data&&data.append("image", img);
+      console.log("img",data.get("image"))
+
+      addProductImage(data,1);
+      
+    }
+  };
+  const onProfileChange = (event: any) => {
+    if (event.target.files && event.target.files[0]) {
+      const img = event.target.files[0];
+      const data = new FormData();
+      data&&data.append("image", img);
+      console.log("img",data.get("image"))
+
+      addProductImage(data,2);
+      
+    }
+  };
   return (
     <div className="w-full h-screen lg:flex items-center justify-between">
       <div className="lg:h-screen lg:w-[60rem] lg:p-14 bg-primary/10 shadow-md rounded-lg">
-        <h2 className="text-center uppercase text-2xl font-roboto_bold text-primary mb-10 underline">
+        <h2 className="text-center uppercase text-2xl font-roboto_bold text-primary mb-2 underline">
           sign up
         </h2>
         <text className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
           basic details
         </text>
         {/* basic */}
-        <div className="flex flex-wrap items-center mt-3 ml-5 lg:ml-0 ">
+        <div className="flex flex-wrap items-center mt-2 ml-5 lg:ml-0 gap-3 ">
           <div className="w-72">
             <Input
               label="Name"
@@ -140,9 +207,8 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-         
-         
-          <div className="w-72 xl:mt-4">
+
+          <div className="w-72">
             <Input
               label="Phone Number"
               color="brown"
@@ -157,7 +223,7 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
           )}
         </div>
         {/* gst */}
-       
+
         {/* address */}
         <div className="my-3">
           <text className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
@@ -188,7 +254,7 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
                 onChange={(e) => setState(e.target.value)}
               />
             </div>
-            <div className="w-72 xl:mt-4">
+            <div className="w-72 xl:mt-4 mt-3">
               <Input
                 label="Pin-Code"
                 maxLength={6}
@@ -199,16 +265,54 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
             </div>
           </div>
         </div>
+        <div className="flex items-center">
+          <div className="">
+            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+              upload AadharCard image
+            </p>
+            <input
+              type="file"
+              name="myImage"
+              onChange={onImageChange}
+              className="my-4 ml-5"
+            />
+</div>
+<div>
+            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+              upload Pancard image
+            </p>
+            <input
+              type="file"
+              name="myImage"
+              onChange={onPanChange}
+              className="my-4 ml-5"
+            />
+</div>
+<div>
+            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+              upload Profile image
+            </p>
+            <input
+              type="file"
+              name="myImage"
+              onChange={onProfileChange}
+              className="my-4 ml-5"
+            />
+</div>   
+        </div>
         {/* bank Detaild */}
-        <div className="my-3">
-          
-          <div className="w-72 lg:w-full mt-3 ml-5 lg:ml-0">
-            <Textarea
+        <text className=" font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+          Bank details
+        </text>
+        <div className="flex my-3">
+          <div className="w-72  mt-3 ml-5 lg:ml-0">
+            <Input
               label="Bank Number"
               color="brown"
               value={bankDeatails?.bankNumber}
-
-              onChange={(e) => setBankDeatils({...bankDeatails,bankNumber:e.target.value})}
+              onChange={(e) =>
+                setBankDeatils({ ...bankDeatails, bankNumber: e.target.value })
+              }
             />
           </div>
           <div className="flex flex-wrap items-center mt-3 ml-5 lg:ml-0">
@@ -217,11 +321,14 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
                 label="Bank IFSC Code"
                 color="brown"
                 value={bankDeatails?.bankIfscCode}
-                onChange={(e) => setBankDeatils({...bankDeatails,bankIfscCode:e.target.value})}
-
+                onChange={(e) =>
+                  setBankDeatils({
+                    ...bankDeatails,
+                    bankIfscCode: e.target.value,
+                  })
+                }
               />
             </div>
-           
           </div>
         </div>
         {/* password */}
@@ -263,9 +370,9 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
             onClick={() => {
               if (
                 name &&
-                email &&
+              
                 mobile &&
-                gst &&
+                
                 address &&
                 city &&
                 state &&
@@ -285,7 +392,10 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
         </div>
         <div className="flex items-center justify-center pb-5">
           <text className="mr-2">Already have an account?</text>
-          <Link to="/login-sales" className="underline text-blue font-roboto_regular">
+          <Link
+            to="/login-sales"
+            className="underline text-blue font-roboto_regular"
+          >
             Login here
           </Link>
         </div>

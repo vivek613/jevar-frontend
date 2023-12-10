@@ -4,6 +4,9 @@ export const NORMAL_USER_LOGOUT = "NORMAL_USER_LOGOUT";
 export const MAIN_USER_LOGIN = "MAIN_USER_LOGIN";
 export const MAIN_USER_LOGOUT = "MAIN_USER_LOGOUT";
 
+export const SALES_USER_LOGIN = "SALES_USER_LOGIN";
+export const SALES_USER_LOGOUT = "SALES_USER_LOGOUT";
+
 export const MENU_ACTION = "MENU_ACTION";
 
 export const LOADER = "LOADER";

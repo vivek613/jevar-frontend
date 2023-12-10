@@ -12,6 +12,7 @@ import {
   import { login } from "../../../Stores/actions/mainAuth";
   import { API } from "../../../Service";
   import { ToastContainer, toast } from "react-toastify";
+import { loginSales } from "../../../Stores/actions/salesAuth";
   
   interface LoginInterface {}
   
@@ -32,7 +33,7 @@ import {
       await API.salesUser_Login(body, dispatch)
         .then((response) => {
           if (response?.status == 200) {
-            dispatch(login(response.data.data));
+            dispatch(loginSales(response.data.data));
             toast.success(response?.data.message);
             navigation("/");
           } else {

@@ -5,8 +5,10 @@ import {
   Typography,
   Button,
   Dialog,
+  Select,
+  Option,
 } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import poster from "../../../Assets/poster.jpg";
 import { useDispatch } from "react-redux";
@@ -35,7 +37,8 @@ const Register: React.FC<RegisterInterface> = () => {
   const [validEmail, setValidEmail] = useState(false);
   const [validMobile, setValidMobile] = useState(false);
   const [open, setOpen] = React.useState(false);
-
+  const [allSalesUserData, setAllUserData] = useState([]);
+  const [selectUser, setSelectUser] = useState("");
   const handleOpen = () => setOpen(!open);
 
   const emailValidation = () => {
@@ -92,6 +95,7 @@ const Register: React.FC<RegisterInterface> = () => {
       mobile: mobile,
       address: address,
       city: city,
+      sales_user: selectUser,
       state: state,
       pincode: pincode,
       password: password,
@@ -126,6 +130,20 @@ const Register: React.FC<RegisterInterface> = () => {
       });
   };
 
+  const getAllSalesUser = async () => {
+    await API.salesUser_get(dispatch)
+      .then((response) => {
+        console.log("data", response);
+        setAllUserData(response?.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  useEffect(() => {
+    getAllSalesUser();
+  }, []);
+
   return (
     <div className="w-full h-screen lg:flex items-center justify-between">
       <div className="lg:h-screen lg:w-[60rem] lg:p-14 bg-primary/10 shadow-md rounded-lg">
@@ -158,7 +176,7 @@ const Register: React.FC<RegisterInterface> = () => {
               Email is not valid.
             </p>
           )}
-          <div className="w-72 xl:mt-4">
+          <div className="w-72 mt-2 xl:mt-4">
             <Input
               label="Phone Number"
               color="brown"
@@ -171,6 +189,21 @@ const Register: React.FC<RegisterInterface> = () => {
               Mobile number is not valid.
             </p>
           )}
+        </div>
+        {/* Sales User */}
+        <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+          Sales user
+        </text>
+        <div className="w-72 mt-2 xl:mt-4">
+          <Select
+            label="Select Sales"
+            onChange={(e: any) => setSelectUser(e)}
+            value={selectUser}
+          >
+            {allSalesUserData?.map((d: any) => {
+              return <Option value={d.id}>{d.name}</Option>;
+            })}
+          </Select>
         </div>
         {/* gst */}
         <div className="my-3">

@@ -171,7 +171,7 @@ const Home: React.FC<HomeInterface> = () => {
         </div>
       </article>
       {/* collections */}
-      {category.length != 0 && (
+      {category?.length != 0 && (
         <div className="my-10">
           <p className="text-center text-3xl capitalize font-roboto_medium tracking-wide text-primary">
             latest collections
@@ -183,7 +183,7 @@ const Home: React.FC<HomeInterface> = () => {
           </div>
         </div>
       )}
-      {category.length != 0 && <Collection data={category} />}
+      {category?.length != 0 && <Collection data={category} />}
       <div className="my-10">
         <p className="text-center text-3xl capitalize font-roboto_medium tracking-wide text-primary">
           find lost jewelry

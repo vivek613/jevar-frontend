@@ -17,6 +17,7 @@ export default function (state = initialState, action: any) {
         user: action.payload,
         isLoggedIn: false,
       };
+     
     default:
       return state;
   }
