@@ -79,7 +79,7 @@ const SalesHome = () => {
           </text>
           <CardDefault
             title={"Payment Status"}
-            value={paymentDetails?.falsePayments?.totalPayAmount}
+            value={paymentDetails?.currentMonthFalsePayments?.totalPayAmount}
           />
         </div>
         <div>
