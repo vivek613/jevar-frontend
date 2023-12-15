@@ -71,7 +71,7 @@ const AddClient = (props: any) => {
             created_date: moment(),
           };
           addProductPayment(data);
-          dispatch(logout({}))
+          dispatch(logout({}));
         }
       })
       .catch((err) => {
@@ -227,7 +227,7 @@ const AddClient = (props: any) => {
   return (
     <React.Fragment>
       <Dialog
-        size="xs"
+        size="sm"
         open={props.open}
         handler={props.handleOpen}
         className="bg-transparent shadow-none"

@@ -126,7 +126,7 @@ const Register: React.FC<RegisterInterface> = () => {
     await API.mainUser_Register(body, dispatch)
       .then((response) => {
         toast.success(response?.data.message);
-        alert(response?.data.message);
+
         handleOpen();
       })
       .catch((err) => {
