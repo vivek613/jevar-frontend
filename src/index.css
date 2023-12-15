@@ -16,7 +16,6 @@
   background: #aa530e;
 } */
 
-
 @font-face {
   font-family: "Roboto-Bold";
   src: url("../src/Fonts/Roboto-Bold.ttf");
@@ -40,4 +39,8 @@
 @font-face {
   font-family: "Roboto-Italic";
   src: url("../src/Fonts/Roboto-Italic.ttf");
+}
+.Toastify {
+  position: absolute;
+  z-index: 999999;
 }

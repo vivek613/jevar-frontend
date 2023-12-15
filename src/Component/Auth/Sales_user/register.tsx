@@ -20,7 +20,6 @@ import { loginSales } from "../../../Stores/actions/salesAuth";
 interface RegisterInterface {}
 
 const SalesRegister: React.FC<RegisterInterface> = () => {
-
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const [name, setName] = useState("");
@@ -39,7 +38,6 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
   const [pandCardImage, setPanCardImage] = React.useState("");
   const [profileImage, setProfileImage] = React.useState();
 
-
   const [bankDeatails, setBankDeatils] = useState({
     bankNumber: "",
     bankIfscCode: "",
@@ -49,7 +47,6 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
   const handleOpen = () => setOpen(!open);
 
   const mobileValidation = () => {
-    
     const regex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
     if (regex.test(mobile)) {
       setValidMobile(false);
@@ -89,25 +86,23 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
   const verify = async () => {
     const body = {
       name: name,
-     
+
       mobile: mobile,
       address: address,
       city: city,
       state: state,
       pincode: pincode,
       password: password,
-      profileimage:profileImage,
-      pancardimage:pandCardImage,
-      adharcardimage:aadharImage,
-      bankifsc:bankDeatails?.bankIfscCode,
-      banknumber:bankDeatails?.bankNumber,
+      profileimage: profileImage,
+      pancardimage: pandCardImage,
+      adharcardimage: aadharImage,
+      bankifsc: bankDeatails?.bankIfscCode,
+      banknumber: bankDeatails?.bankNumber,
       otp: otp,
     };
     await API.salesUser_verify(body, dispatch)
       .then((response) => {
         toast.success(response?.data.message);
-        dispatch(loginSales(response?.data.data));
-        navigation("/");
       })
       .catch((err) => {
         toast.error(err);
@@ -130,24 +125,17 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
         console.log(err);
       });
   };
-  const addProductImage = async (data: any,type:any) => {
-    await API.Common_add_Image(
-      data,
-      dispatch
-    )
+  const addProductImage = async (data: any, type: any) => {
+    await API.Common_add_Image(data, dispatch)
       .then((response) => {
-       if(type===1){
-        setPanCardImage(response?.data?.data?.thumbnail)
-
-       }else if(type===2){
-        setProfileImage(response?.data?.data?.thumbnail)
-
-       }else{
-        setAadharImage(response?.data?.data?.thumbnail)
-
-       }
+        if (type === 1) {
+          setPanCardImage(response?.data?.data?.thumbnail);
+        } else if (type === 2) {
+          setProfileImage(response?.data?.data?.thumbnail);
+        } else {
+          setAadharImage(response?.data?.data?.thumbnail);
+        }
         toast.success(response?.data.message);
-        
       })
       .catch((err) => {
         console.log(err);
@@ -157,35 +145,31 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
     if (event.target.files && event.target.files[0]) {
       const img = event.target.files[0];
 
-
       const data = new FormData();
-      data&&data.append("image", img);
-      console.log("img",data.get("image"))
+      data && data.append("image", img);
+      console.log("img", data.get("image"));
 
-      addProductImage(data,0);
+      addProductImage(data, 0);
     }
-    
   };
   const onPanChange = (event: any) => {
     if (event.target.files && event.target.files[0]) {
       const img = event.target.files[0];
       const data = new FormData();
-      data&&data.append("image", img);
-      console.log("img",data.get("image"))
+      data && data.append("image", img);
+      console.log("img", data.get("image"));
 
-      addProductImage(data,1);
-      
+      addProductImage(data, 1);
     }
   };
   const onProfileChange = (event: any) => {
     if (event.target.files && event.target.files[0]) {
       const img = event.target.files[0];
       const data = new FormData();
-      data&&data.append("image", img);
-      console.log("img",data.get("image"))
+      data && data.append("image", img);
+      console.log("img", data.get("image"));
 
-      addProductImage(data,2);
-      
+      addProductImage(data, 2);
     }
   };
   return (
@@ -276,8 +260,8 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
               onChange={onImageChange}
               className="my-4 ml-5"
             />
-</div>
-<div>
+          </div>
+          <div>
             <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
               upload Pancard image
             </p>
@@ -287,8 +271,8 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
               onChange={onPanChange}
               className="my-4 ml-5"
             />
-</div>
-<div>
+          </div>
+          <div>
             <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
               upload Profile image
             </p>
@@ -298,7 +282,7 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
               onChange={onProfileChange}
               className="my-4 ml-5"
             />
-</div>   
+          </div>
         </div>
         {/* bank Detaild */}
         <text className=" font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
@@ -370,9 +354,7 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
             onClick={() => {
               if (
                 name &&
-              
                 mobile &&
-                
                 address &&
                 city &&
                 state &&
@@ -481,9 +463,8 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
             </Button>
           </div>
         </div>
-        <ToastContainer />
       </Dialog>
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </div>
   );
 };

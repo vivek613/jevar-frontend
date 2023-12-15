@@ -6,11 +6,11 @@ import { useDispatch } from "react-redux";
 
 import { API } from "../../../Service";
 import { ToastContainer, toast } from "react-toastify";
-import { loginSales } from "../../../Stores/actions/salesAuth";
+import { adminlogin } from "../../../Stores/actions/adminAuth";
 
 interface LoginInterface {}
 
-const SalesLogin: React.FC<LoginInterface> = () => {
+const AdminLogin: React.FC<LoginInterface> = () => {
   const navigation = useNavigate();
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
@@ -20,17 +20,16 @@ const SalesLogin: React.FC<LoginInterface> = () => {
     const regx =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     const body = {
-      email: regx.test(value) ? value : "",
       mobile: regx.test(value) ? "" : value,
       password: password,
     };
-    await API.salesUser_Login(body, dispatch)
+    await API.adminUser_Login(body, dispatch)
       .then((response) => {
         if (response?.status == 200) {
           console.log("ddddd", response.data.data);
-          dispatch(loginSales(response.data.data));
+          dispatch(adminlogin(response.data.data));
           toast.success(response?.data.message);
-          navigation("/");
+          navigation("/admin-dashboard");
         } else {
           console.log("dddd", response);
           toast.info(response?.data.message);
@@ -122,4 +121,4 @@ const SalesLogin: React.FC<LoginInterface> = () => {
   );
 };
 
-export default SalesLogin;
+export default AdminLogin;

@@ -407,9 +407,9 @@ const Register: React.FC<RegisterInterface> = () => {
             </Button>
           </div>
         </div>
-        <ToastContainer />
+        {/* <ToastContainer /> */}
       </Dialog>
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </div>
   );
 };

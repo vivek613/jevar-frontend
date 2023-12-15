@@ -17,6 +17,8 @@ import SellProduct from "./NormalUser/SellProduct";
 import CollectionList from "./collectionList";
 import SalesLogin from "../Component/Auth/Sales_user/login";
 import SalesRegister from "../Component/Auth/Sales_user/register";
+import AdminLogin from "../Component/Auth/admin/login";
+import AdminDashboard from "./Admin_dashboard";
 
 const Index = () => {
   return (
@@ -26,6 +28,8 @@ const Index = () => {
         <Route path="/" element={<Home />} />
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+
         <Route path="register-sales" element={<SalesRegister />} />
         <Route path="login-sales" element={<SalesLogin />} />
         <Route path="used-jewellry" element={<UsedJewellry />} />
