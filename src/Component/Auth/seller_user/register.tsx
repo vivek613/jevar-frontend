@@ -95,7 +95,7 @@ const Register: React.FC<RegisterInterface> = () => {
       mobile: mobile,
       address: address,
       city: city,
-      sales_user: selectUser,
+      salesId: selectUser,
       state: state,
       pincode: pincode,
       password: password,
@@ -103,9 +103,14 @@ const Register: React.FC<RegisterInterface> = () => {
     };
     await API.mainUser_verify(body, dispatch)
       .then((response) => {
-        toast.success(response?.data.message);
-        dispatch(login(response?.data.data));
-        navigation("/");
+        if (response?.status == 200) {
+          toast.success(response?.data.message);
+          dispatch(login(response?.data.data));
+          navigation("/");
+        } else {
+          console.log("dddd", response);
+          toast.info(response?.data.message);
+        }
       })
       .catch((err) => {
         toast.error(err);

@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
 
-import { logoutSales } from "../../../Stores/actions/salesAuth";
+import { adminlogout } from "../../../Stores/actions/adminAuth";
 
 interface DashboardHeaderInterface {}
 
@@ -17,7 +17,7 @@ const DashboardHeader: React.FC<DashboardHeaderInterface> = () => {
   const [open, setOpen] = React.useState(false);
 
   const _logout = () => {
-    dispatch(logoutSales({}));
+    dispatch(adminlogout({}));
     navigation("/");
   };
 
