@@ -29,7 +29,7 @@ const AdminLogin: React.FC<LoginInterface> = () => {
           console.log("ddddd", response.data.data);
           dispatch(adminlogin(response.data.data));
           toast.success(response?.data.message);
-          navigation("/admin-dashboard");
+          navigation("/");
         } else {
           console.log("dddd", response);
           toast.info(response?.data.message);

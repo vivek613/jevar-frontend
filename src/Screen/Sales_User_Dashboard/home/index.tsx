@@ -3,16 +3,31 @@ import { API } from "../../../Service";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import CardDefault from "../components/Card";
-import { Card, CardBody, Typography } from "@material-tailwind/react";
+import { Button, Card, CardBody, Typography } from "@material-tailwind/react";
+import GraphModel from "../model/graphModel";
+import PaymentGraphModel from "../model/paymentGraphModel";
+import { monthData } from "../../../utils/Utils";
 
 const SalesHome = () => {
   const userdata = useSelector((state: any) => state.salesAuth);
+  const d = new Date();
+
   const dispatch = useDispatch();
-  const [monthIncome, setMonthIncome] = useState<any>();
+  const [monthIncome, setMonthIncome] = useState<any>({});
   const [associatedUser, setAssociatedUser] = useState([]);
   const [paymentDetails, setPaymentDetails] = useState<any>();
   const [jewellerPaymentCount, setJewellerPaymentCount] = useState<any>();
+  const [openModal, setOpenModal] = React.useState(false);
+  const [openModalForPayment, setOpenModalForPayment] = React.useState(false);
+  const [graphData, setGraphData] = useState();
 
+  const handleOpen = () => {
+    setOpenModal((cur) => !cur);
+  };
+  const handleOpenForPayment = () => {
+    setOpenModalForPayment((cur) => !cur);
+    setGraphData(jewellerPaymentCount);
+  };
   const getProductPayment = async () => {
     await API.User_fetchMonthIncome(
       userdata.user.user.id,
@@ -85,10 +100,6 @@ const SalesHome = () => {
     getJewellerPayment();
   }, []);
 
-  console.log("mont", monthIncome);
-  console.log("paye", paymentDetails);
-  console.log("jewe", associatedUser);
-
   return (
     <>
       <div className="grid grid-cols-4 gap-4 ml-4 mt-4">
@@ -97,8 +108,13 @@ const SalesHome = () => {
             Month Income
           </text>
           <CardDefault
-            title={"November Income"}
-            value={monthIncome?.totalPayAmount}
+            title={`${monthData[d.getMonth()]} Income`}
+            showButton={true}
+            value={monthIncome?.currentMonthTotalPayAmount || 0}
+            handleOpen={() => {
+              handleOpen();
+              setGraphData(monthIncome?.payments);
+            }}
           />
         </div>
 
@@ -108,6 +124,7 @@ const SalesHome = () => {
           </text>
           <CardDefault
             title={"Payment Status"}
+            showButton={false}
             value={paymentDetails?.currentMonthFalsePayments?.totalPayAmount}
           />
         </div>
@@ -116,6 +133,7 @@ const SalesHome = () => {
             Number Of jewellers
           </text>
           <CardDefault
+            showButton={false}
             title={"Number of Jewellers Associated with you"}
             value={associatedUser?.length}
           />
@@ -132,10 +150,35 @@ const SalesHome = () => {
               </Typography>
               <div className="text-lg font-bold">{`${jewellerPaymentCount?.jewellerPaymentDone?.length} jewellers paid ${jewellerPaymentCount?.jewellerPaymentNotDone?.length} remaining
 `}</div>
+              <Button
+                variant="filled"
+                color="blue-gray"
+                size="sm"
+                fullWidth
+                // className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 "
+                className="flex items-center justify-center w-36 mt-3"
+                onClick={handleOpenForPayment}
+              >
+                View Details
+              </Button>
             </CardBody>
           </Card>
         </div>
       </div>
+      {openModal && (
+        <GraphModel
+          open={openModal}
+          handleOpen={() => handleOpen()}
+          data={graphData}
+        />
+      )}
+      {openModalForPayment && (
+        <PaymentGraphModel
+          open={openModalForPayment}
+          handleOpen={() => handleOpenForPayment()}
+          data={graphData}
+        />
+      )}
     </>
   );
 };
