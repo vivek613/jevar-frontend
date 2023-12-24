@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import { API } from "../../../Service";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import CardDefault from "../components/Card";
-import { Button, Card, CardBody, Typography } from "@material-tailwind/react";
 import GraphModel from "../model/graphModel";
 import PaymentGraphModel from "../model/paymentGraphModel";
 import { monthData } from "../../../utils/Utils";
-import Table from "../components/Table";
+import { Button, Card, Col, Row } from "antd";
+import CardDefault from "../../../Component/Card/Card";
 
 const SalesHome = () => {
   const userdata = useSelector((state: any) => state.salesAuth);
@@ -102,80 +101,59 @@ const SalesHome = () => {
   }, []);
 
   return (
-    <>
-      <div className="grid grid-cols-4 gap-4 ml-4 mt-4">
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            Month Income
-          </text>
-          <CardDefault
-            title={`${monthData[d.getMonth()]} Income`}
-            showButton={true}
-            value={monthIncome?.currentMonthTotalPayAmount || 0}
-            handleOpen={() => {
-              handleOpen();
-              setGraphData(monthIncome?.totalPayAmount);
-            }}
-          />
-        </div>
+    <div className="bg-[#f0f2f5]  p-3">
+      <Row gutter={[24, 24]}>
+        <CardDefault
+          title={`${monthData[d.getMonth()]} Income`}
+          showButton={true}
+          value={monthIncome?.currentMonthTotalPayAmount || 0}
+          handleOpen={() => {
+            handleOpen();
+            setGraphData(monthIncome?.totalPayAmount);
+          }}
+        />
 
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            Payement Status
-          </text>
-          <CardDefault
-            title={"Payment Status"}
-            showButton={false}
-            value={paymentDetails?.currentMonthFalsePayments?.totalPayAmount}
-          />
-        </div>
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            Number Of jewellers
-          </text>
-          <CardDefault
-            showButton={true}
-            title={"Number of Jewellers Associated with you"}
-            value={associatedUser?.length}
-            handleOpen={() => {
-              handleOpen();
-              setGraphData(associatedUser);
-            }}
-          />
-        </div>
+        <CardDefault
+          title={"Payment Status"}
+          showButton={false}
+          value={paymentDetails?.currentMonthFalsePayments?.totalPayAmount}
+        />
 
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            jeweller payment status
-          </text>
-          <Card className="mt-6 w-96">
-            <CardBody className="flex  justify-center flex-col">
-              <Typography variant="h5" color="blue-gray" className="mb-2">
-                Payment Status of Jewellers associated with you
-              </Typography>
-              <div className="text-lg font-bold">{`${jewellerPaymentCount?.jewellerPaymentDone?.length} jewellers paid ${jewellerPaymentCount?.jewellerPaymentNotDone?.length} remaining
-`}</div>
-              <Button
-                variant="filled"
-                color="blue-gray"
-                size="sm"
-                fullWidth
-                // className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 "
-                className="flex items-center justify-center w-36 mt-3"
-                onClick={handleOpenForPayment}
-              >
-                View Details
-              </Button>
-            </CardBody>
+        <CardDefault
+          showButton={true}
+          title={"Number of Jewellers Associated with you"}
+          value={associatedUser?.length}
+          handleOpen={() => {
+            handleOpen();
+            setGraphData(associatedUser);
+          }}
+        />
+
+        <Col span={8}>
+          <Card
+            title={"Payment Status of Jewellers associated with you"}
+            bordered={true}
+            className="min-h-[180px] mt-3"
+          >
+            <span className="font-bold text-lg">{`${jewellerPaymentCount?.jewellerPaymentDone?.length} jewellers paid ${jewellerPaymentCount?.jewellerPaymentNotDone?.length} remaining
+`}</span>
+
+            <Button
+              className="flex items-center mt-3"
+              onClick={handleOpenForPayment}
+            >
+              View Details
+            </Button>
           </Card>
-        </div>
-      </div>
+        </Col>
+      </Row>
       <div>
         <h3></h3>
       </div>
       {openModal && (
         <GraphModel
           open={openModal}
+          setOpenModal={setOpenModal}
           handleOpen={() => handleOpen()}
           data={graphData}
         />
@@ -187,7 +165,7 @@ const SalesHome = () => {
           data={graphData}
         />
       )}
-    </>
+    </div>
   );
 };
 

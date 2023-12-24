@@ -1,24 +1,24 @@
-import { Dialog } from "@material-tailwind/react";
 import React from "react";
-import Table from "../components/Table";
+import { Modal } from "antd";
+import TableComponents from "../../../Component/Table/Table";
 const GraphModel = (props: any) => {
   const xData = Object.keys(props.data);
   const TableData = xData.map((key) => props.data[key]);
-  console.log("data", TableData);
+  const handleCancel = () => {
+    props.setOpenModal(false);
+  };
   return (
     <React.Fragment>
-      <Dialog
-        size="xl"
+      <Modal
         open={props.open}
-        handler={props.handleOpen}
-        // className="bg-transparent shadow-none"
+        title="Title"
+        onOk={props.handleOpen}
+        onCancel={handleCancel}
+        footer={false}
+        width={800}
       >
-        {/* max-w-[24rem] */}
-        <div className="p-5">
-          <h2> income deatils</h2>
-          <Table TableData={TableData} />
-        </div>
-      </Dialog>
+        <TableComponents TableData={TableData} />
+      </Modal>
     </React.Fragment>
   );
 };

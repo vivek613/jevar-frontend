@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { API } from "../../../Service";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import CardDefault from "../components/Card";
-import { Button, Card, CardBody, Typography } from "@material-tailwind/react";
 import GraphModel from "../model/graphModel";
 import PaymentGraphModel from "../model/paymentGraphModel";
 import { monthData } from "../../../utils/Utils";
+import { Button, Card, Col, Row } from "antd";
+import CardDefault from "../../../Component/Card/Card";
 
 const AdminHome = () => {
   const userdata = useSelector((state: any) => state.adminAuth);
@@ -92,11 +92,8 @@ const AdminHome = () => {
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-4 ml-5 mt-5">
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            Total Number Of Jewellers
-          </text>
+      <div className="bg-[#f0f2f5]  p-3">
+        <Row gutter={[24, 24]}>
           <CardDefault
             title={"Total Number Of Jewellers Onboard"}
             showButton={true}
@@ -106,12 +103,7 @@ const AdminHome = () => {
               setGraphData(totalJeweller?.TotalData);
             }}
           />
-        </div>
 
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            Total Number of Sales
-          </text>
           <CardDefault
             title={"Total Number of Sales Person Onboard"}
             value={totalSalesUser?.TotalCount}
@@ -121,67 +113,48 @@ const AdminHome = () => {
               setGraphData(totalSalesUser?.TotalData);
             }}
           />
-        </div>
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            {monthData[d.getMonth()]} register
-          </text>
+
           <CardDefault
             title={`Number of ${monthData[d.getMonth()]} register`}
             showButton={false}
             value={totalAllUser?.monthDataCount}
           />
-        </div>
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            today register
-          </text>
+
           <CardDefault
             title={"Number of  today register"}
             showButton={false}
             value={totalAllUser?.todayData?.length}
           />
-        </div>
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            Number Of Total Register
-          </text>
+
           <CardDefault
             title={"Annual Registration"}
             showButton={false}
             value={totalAllUser?.annualTotalCount}
           />
-        </div>
 
-        <div className="col-span-2">
-          <text className="font-roboto_medium mt-2 mb-4 text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            jeweller payment status
-          </text>
-          <Card className="mt-6 w-96">
-            <CardBody className="flex  justify-center flex-col">
-              <Typography variant="h5" color="blue-gray" className="mb-2">
-                {monthData[d.getMonth()]} Month Payment Status
-              </Typography>
-              <div className="text-lg font-bold">{`${paymentDetails?.jewellerPaymentDone?.length} jewellers paid ${paymentDetails?.jewellerPaymentNotDone?.length} remaining
-`}</div>
+          <Col span={8}>
+            <Card
+              title={`${monthData[d.getMonth()]} Month Payment Status`}
+              bordered={true}
+              className="min-h-[180px] mt-3"
+            >
+              <span className="font-bold text-lg">{`${paymentDetails?.jewellerPaymentDone?.length} jewellers paid ${paymentDetails?.jewellerPaymentNotDone?.length} remaining
+`}</span>
+
               <Button
-                variant="filled"
-                color="blue-gray"
-                size="sm"
-                fullWidth
-                // className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 "
-                className="flex items-center justify-center w-36  mt-3"
+                className="flex items-center mt-3"
                 onClick={handleOpenForPayment}
               >
                 View Details
               </Button>
-            </CardBody>
-          </Card>
-        </div>
+            </Card>
+          </Col>
+        </Row>
       </div>
       {openModal && (
         <GraphModel
           open={openModal}
+          setOpenModal={setOpenModal}
           handleOpen={() => handleOpen()}
           data={graphData}
         />
