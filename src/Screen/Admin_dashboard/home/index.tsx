@@ -103,7 +103,7 @@ const AdminHome = () => {
             value={totalJeweller?.TotalCount}
             handleOpen={() => {
               handleOpen();
-              setGraphData(totalJeweller?.monthWise);
+              setGraphData(totalJeweller?.TotalData);
             }}
           />
         </div>
@@ -118,7 +118,7 @@ const AdminHome = () => {
             showButton={true}
             handleOpen={() => {
               handleOpen();
-              setGraphData(totalSalesUser?.monthWise);
+              setGraphData(totalSalesUser?.TotalData);
             }}
           />
         </div>

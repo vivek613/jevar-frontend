@@ -8,8 +8,6 @@ import {
   CardFooter,
   Typography,
   Input,
-  Checkbox,
-  Radio,
   Select,
   Option,
 } from "@material-tailwind/react";
@@ -18,7 +16,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoader } from "../../Stores/actions/loader";
 import moment from "moment";
-import bcrypt from "bcryptjs";
 import { logout } from "../../Stores/actions/auth";
 
 const AddClient = (props: any) => {
@@ -40,14 +37,14 @@ const AddClient = (props: any) => {
   const addProduct = async (data: any) => {
     const body = {
       user_id: acHave == "have" ? data.id : data.user.id,
-      product_name: pName,
+      purchase_from: pName,
       product_type: jType,
       huid: huide,
       price: price,
       bill_image: billData,
       buying_date: moment(),
       jeweller_id: userdata.user.user.id,
-      jewellers_name: userdata.user.user.name,
+      jewellers_name: userdata?.user?.user?.name,
       jewellers_address: userdata.user.user.address,
       city: userdata.user.user.city,
       pincode: userdata.user.user.pincode,
@@ -85,14 +82,15 @@ const AddClient = (props: any) => {
     const is_verified: any = true;
     const formData = new FormData();
     formData.append("user_id", data.id);
-    formData.append("product_name", pName);
     formData.append("product_type", jType);
     formData.append("huid", huids);
     formData.append("bill_image", billData);
     formData.append("buying_date", date);
     formData.append("price", price);
     formData.append("jeweller_id", userdata.user.user.id);
-    formData.append("jewellers_name", userdata.user.user.name);
+    formData.append("jewellers_name", userdata?.user?.user?.name);
+    formData.append("purchase_from", pName);
+
     formData.append("jewellers_address", userdata.user.user.address);
     formData.append("city", userdata.user.user.city);
     formData.append("pincode", userdata.user.user.pincode);
@@ -223,6 +221,7 @@ const AddClient = (props: any) => {
     setOTP("");
     setStatus("");
   };
+  console.log("vvvv", userdata);
 
   return (
     <React.Fragment>
@@ -245,7 +244,16 @@ const AddClient = (props: any) => {
           <CardBody className="flex flex-col gap-4">
             <Input
               type="text"
-              label="Jewellery Name"
+              label="Register By"
+              size="lg"
+              color="gray"
+              // value={pName}
+              defaultValue={userdata?.user?.user?.name}
+              disabled={true}
+            />
+            <Input
+              type="text"
+              label="Purchase from"
               size="lg"
               color="gray"
               value={pName}

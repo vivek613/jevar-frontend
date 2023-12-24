@@ -25,14 +25,6 @@ const UsedJewellry: React.FC<UsedJewellrInterface> = () => {
     setType(e);
   };
 
-  const _selectColor = (e: any) => {
-    setColors(e);
-  };
-
-  const _selectCondition = (e: any) => {
-    setConditions(e);
-  };
-
   useEffect(() => {
     getProductForSell();
   }, [type]);
@@ -49,56 +41,6 @@ const UsedJewellry: React.FC<UsedJewellrInterface> = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const SelectedFilter = () => {
-    return (
-      <div className="flex flex-wrap items-center -ml-4 mt-3">
-        {type && (
-          <div
-            onClick={() => setType("")}
-            className="px-2 py-1 bg-primary rounded-xl cursor-pointer"
-          >
-            <text className="text-white text-[0.800rem] font-roboto_medium tracking-wider">
-              {type}
-            </text>
-          </div>
-        )}
-        {colors && (
-          <div
-            onClick={() => setColors("")}
-            className="px-2 py-1 bg-primary rounded-xl ml-2 cursor-pointer"
-          >
-            <text className="text-white text-[0.800rem] font-roboto_medium tracking-wider">
-              {colors}
-            </text>
-          </div>
-        )}
-        {priceStart && priceEnd ? (
-          <div
-            onClick={() => {
-              setPriceEnd("");
-              setPriceStart("");
-            }}
-            className="px-2 py-1 bg-primary rounded-xl mr-2 mt-2 cursor-pointer"
-          >
-            <text className="text-white text-[0.800rem] font-roboto_medium tracking-wider">
-              {priceStart} - {priceEnd}
-            </text>
-          </div>
-        ) : null}
-        {conditions && (
-          <div
-            onClick={() => setConditions("")}
-            className="px-2 py-1 bg-primary rounded-xl mt-2 cursor-pointer"
-          >
-            <text className="text-white text-[0.800rem] font-roboto_medium tracking-wider">
-              {conditions}
-            </text>
-          </div>
-        )}
-      </div>
-    );
   };
 
   const LeftSideBar = () => {
@@ -149,27 +91,6 @@ const UsedJewellry: React.FC<UsedJewellrInterface> = () => {
             </div>
           </div>
           {/* price filter */}
-          {/* <div>
-              <text className="text-base font-roboto_medium text-blue">
-                Price Filter
-              </text>
-              <div className="w-60 mt-3">
-                <Input
-                  label="Start"
-                  color="brown"
-                  value={priceStart}
-                  onChange={(e) => setPriceStart(e.target.value)}
-                />
-              </div>
-              <div className="w-60 mt-3">
-                <Input
-                  label="End"
-                  color="brown"
-                  value={priceEnd}
-                  onChange={(e) => setPriceEnd(e.target.value)}
-                />
-              </div>
-            </div> */}
         </div>
       </>
     );

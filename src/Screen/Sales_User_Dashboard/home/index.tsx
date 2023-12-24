@@ -7,6 +7,7 @@ import { Button, Card, CardBody, Typography } from "@material-tailwind/react";
 import GraphModel from "../model/graphModel";
 import PaymentGraphModel from "../model/paymentGraphModel";
 import { monthData } from "../../../utils/Utils";
+import Table from "../components/Table";
 
 const SalesHome = () => {
   const userdata = useSelector((state: any) => state.salesAuth);
@@ -14,7 +15,7 @@ const SalesHome = () => {
 
   const dispatch = useDispatch();
   const [monthIncome, setMonthIncome] = useState<any>({});
-  const [associatedUser, setAssociatedUser] = useState([]);
+  const [associatedUser, setAssociatedUser] = useState<any>([]);
   const [paymentDetails, setPaymentDetails] = useState<any>();
   const [jewellerPaymentCount, setJewellerPaymentCount] = useState<any>();
   const [openModal, setOpenModal] = React.useState(false);
@@ -113,7 +114,7 @@ const SalesHome = () => {
             value={monthIncome?.currentMonthTotalPayAmount || 0}
             handleOpen={() => {
               handleOpen();
-              setGraphData(monthIncome?.payments);
+              setGraphData(monthIncome?.totalPayAmount);
             }}
           />
         </div>
@@ -133,9 +134,13 @@ const SalesHome = () => {
             Number Of jewellers
           </text>
           <CardDefault
-            showButton={false}
+            showButton={true}
             title={"Number of Jewellers Associated with you"}
             value={associatedUser?.length}
+            handleOpen={() => {
+              handleOpen();
+              setGraphData(associatedUser);
+            }}
           />
         </div>
 
@@ -164,6 +169,9 @@ const SalesHome = () => {
             </CardBody>
           </Card>
         </div>
+      </div>
+      <div>
+        <h3></h3>
       </div>
       {openModal && (
         <GraphModel

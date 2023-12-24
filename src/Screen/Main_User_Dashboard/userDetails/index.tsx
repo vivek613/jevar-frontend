@@ -17,7 +17,7 @@ import ProductView from "../../../Component/addProductForUser/productView";
 import { useLocation } from "react-router-dom";
 import moment from "moment";
 
-const tableHead = ["PRODUCT NAME", "HUID", "TOTAL-PRICE", "Buying-Date", ""];
+const tableHead = ["JEWELLERY NAME", "HUID", "TOTAL-PRICE", "Buying-Date", ""];
 
 const UserDetails = () => {
   const userdata = useSelector((state: any) => state.mainAuth);
@@ -200,7 +200,7 @@ const UserDetails = () => {
                           scope="row"
                           className="px-6 py-2 text-[1rem] font-roboto_medium text-gray-900 whitespace-nowrap capitalize"
                         >
-                          {item.product_name}
+                          {item.product_type}
                         </td>
                         <td className="px-6 py-2 text-[1rem] font-roboto_regular text-gray-600">
                           {item.huid}
