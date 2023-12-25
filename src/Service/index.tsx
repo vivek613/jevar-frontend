@@ -1,11 +1,11 @@
 import axios from "axios";
 import { setLoader } from "../Stores/actions/loader";
 // const BASE_URL = "https://jevar-backend-4j8y.onrender.com";
-const BASE_URL = "http://localhost:8100";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 export const Image_URL = "";
 
 const apiUrl = process.env.REACT_APP_API_URL;
-
+console.log("base", BASE_URL);
 export const API = {
   normalUser_Register: async (body: any, dispatch: any) => {
     try {
@@ -375,7 +375,6 @@ export const API = {
 
     dispatch: any
   ) => {
-    console.log("data", body);
     dispatch(setLoader(true));
     try {
       const headers = {
@@ -678,6 +677,32 @@ export const API = {
       };
       const data = await axios.post(
         `${BASE_URL}/api/v1/salesUser/login`,
+        body,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
+  salesUser_approve: async (
+    id: any,
+    token: any,
+    body: object,
+    dispatch: any
+  ) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.patch(
+        `${BASE_URL}/api/v1/salesUser/approve-request/${id}`,
         body,
         {
           headers: headers,

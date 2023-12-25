@@ -13,11 +13,8 @@ import { Link, useNavigate } from "react-router-dom";
 import poster from "../../../Assets/poster.jpg";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
-import { login } from "../../../Stores/actions/mainAuth";
-import OTPInput from "../../OTPInput";
-import { API } from "../../../Service";
-import { setLoader } from "../../../Stores/actions/loader";
 import { Col, Row } from "antd";
+import OTPInput from "../OTPInput";
 
 interface RegisterInterface {}
 
@@ -60,95 +57,6 @@ const Register: React.FC<RegisterInterface> = () => {
       setValidMobile(true);
     }
   };
-
-  React.useEffect(() => {
-    if (open) {
-      var times = 30;
-      const interval = setInterval(() => {
-        times -= 1;
-        if (times <= 0) {
-          clearInterval(interval);
-        } else {
-        }
-        settime(times);
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [open]);
-
-  const resendTime = () => {
-    var times = 30;
-    const interval = setInterval(() => {
-      times -= 1;
-      if (times <= 0) {
-        clearInterval(interval);
-      } else {
-      }
-      settime(times);
-    }, 1000);
-    return () => clearInterval(interval);
-  };
-
-  const verify = async () => {
-    const body = {
-      name: name,
-      email: email,
-      mobile: mobile,
-      address: address,
-      city: city,
-      salesId: selectUser,
-      state: state,
-      pincode: pincode,
-      password: password,
-      otp: otp,
-    };
-    await API.mainUser_verify(body, dispatch)
-      .then((response) => {
-        if (response?.status == 200) {
-          toast.success(response?.data.message);
-          dispatch(login(response?.data.data));
-          navigation("/");
-        } else {
-          console.log("dddd", response);
-          toast.info(response?.data.message);
-        }
-      })
-      .catch((err) => {
-        toast.error(err);
-        console.log(err);
-      });
-  };
-
-  const register = async () => {
-    const body = {
-      email: email,
-      mobile: mobile,
-    };
-    await API.mainUser_Register(body, dispatch)
-      .then((response) => {
-        toast.success(response?.data.message);
-
-        handleOpen();
-      })
-      .catch((err) => {
-        toast.error(err);
-        console.log(err);
-      });
-  };
-
-  const getAllSalesUser = async () => {
-    await API.salesUser_get(dispatch)
-      .then((response) => {
-        console.log("data", response);
-        setAllUserData(response?.data?.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  useEffect(() => {
-    getAllSalesUser();
-  }, []);
 
   return (
     <div className="w-full h-screen lg:flex items-center justify-between">
@@ -265,6 +173,7 @@ const Register: React.FC<RegisterInterface> = () => {
             />
           </Col>
         </Row>
+
         {/* password */}
         <div className="my-3">
           <text className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
@@ -313,7 +222,7 @@ const Register: React.FC<RegisterInterface> = () => {
                 pincode &&
                 password
               ) {
-                register();
+                // register();
               } else {
                 toast.error("All Fields are required!");
               }
@@ -374,7 +283,7 @@ const Register: React.FC<RegisterInterface> = () => {
               inputClassName="otpInput"
               isNumberInput
               autoFocus
-              onChangeOTP={(otp) => setOtp(otp)}
+              onChangeOTP={(otp: any) => setOtp(otp)}
               inputStyle={{
                 width: 40,
                 height: 40,
@@ -388,7 +297,7 @@ const Register: React.FC<RegisterInterface> = () => {
           </div>
           {time == 0 && (
             <p
-              onClick={() => resendTime()}
+              // onClick={() => resendTime()}
               className="text-center capitalize text-red-500 font-roboto_medium cursor-pointer"
             >
               resend OTP
@@ -398,7 +307,7 @@ const Register: React.FC<RegisterInterface> = () => {
             <Button
               onClick={() => {
                 if (otp.length == 4) {
-                  verify();
+                  // verify();
                 } else {
                   toast.error("Please fill OTP!");
                 }

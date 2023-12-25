@@ -16,6 +16,8 @@ import OTPInput from "../../OTPInput";
 import { API } from "../../../Service";
 import { setLoader } from "../../../Stores/actions/loader";
 import { loginSales } from "../../../Stores/actions/salesAuth";
+import UploadFileComponents from "../../Upload/UploadFile";
+import { Col, Row } from "antd";
 
 interface RegisterInterface {}
 
@@ -142,19 +144,18 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
       });
   };
   const onImageChange = (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      const img = event.target.files[0];
+    if (event) {
+      const img = event;
 
       const data = new FormData();
       data && data.append("image", img);
-      console.log("img", data.get("image"));
 
       addProductImage(data, 0);
     }
   };
   const onPanChange = (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      const img = event.target.files[0];
+    if (event) {
+      const img = event;
       const data = new FormData();
       data && data.append("image", img);
       console.log("img", data.get("image"));
@@ -163,8 +164,10 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
     }
   };
   const onProfileChange = (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      const img = event.target.files[0];
+    console.log("file", event);
+
+    if (event) {
+      const img = event;
       const data = new FormData();
       data && data.append("image", img);
       console.log("img", data.get("image"));
@@ -174,7 +177,7 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
   };
   return (
     <div className="w-full h-screen lg:flex items-center justify-between">
-      <div className="lg:h-screen lg:w-[60rem] lg:p-14 bg-primary/10 shadow-md rounded-lg">
+      <div className="h-screen lg:w-[60rem] lg:p-14 bg-primary/10 shadow-md rounded-lg">
         <h2 className="text-center uppercase text-2xl font-roboto_bold text-primary mb-2 underline">
           sign up
         </h2>
@@ -182,137 +185,120 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
           basic details
         </text>
         {/* basic */}
-        <div className="flex flex-wrap items-center mt-2 ml-5 lg:ml-0 gap-3 ">
-          <div className="w-72">
+        <Row gutter={[8, 8]}>
+          <Col span={12}>
             <Input
               label="Name"
               color="brown"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-          </div>
+          </Col>
 
-          <div className="w-72">
+          <Col span={12}>
             <Input
               label="Phone Number"
               color="brown"
               onChange={(e) => setMobile(e.target.value)}
               onBlur={mobileValidation}
             />
-          </div>
+          </Col>
           {validMobile && (
             <p className="text-red-600 text-xs -mt-2 font-roboto_medium">
               Mobile number is not valid.
             </p>
           )}
-        </div>
-        {/* gst */}
 
-        {/* address */}
-        <div className="my-3">
-          <text className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-            Shop Address
-          </text>
-          <div className="w-72 lg:w-full mt-3 ml-5 lg:ml-0">
+          {/* address */}
+
+          <Col span={12}>
             <Textarea
               label="Address"
+              className="min-h-full"
               color="brown"
+              rows={1}
+              resize={true}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
-          </div>
-          <div className="flex flex-wrap items-center mt-3 ml-5 lg:ml-0">
-            <div className="w-72">
-              <Input
-                label="City"
-                color="brown"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-              />
-            </div>
-            <div className="w-72 lg:mx-5 my-4 lg:my-0">
-              <Input
-                label="State"
-                color="brown"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-              />
-            </div>
-            <div className="w-72 xl:mt-4 mt-3">
-              <Input
-                label="Pin-Code"
-                maxLength={6}
-                color="brown"
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="">
-            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-              upload AadharCard image
-            </p>
-            <input
-              type="file"
-              name="myImage"
-              onChange={onImageChange}
-              className="my-4 ml-5"
+          </Col>
+
+          <Col span={12}>
+            <Input
+              label="City"
+              color="brown"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
             />
-          </div>
-          <div>
-            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-              upload Pancard image
-            </p>
-            <input
-              type="file"
-              name="myImage"
-              onChange={onPanChange}
-              className="my-4 ml-5"
+          </Col>
+          <Col span={12}>
+            <Input
+              label="State"
+              color="brown"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
             />
-          </div>
-          <div>
-            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-              upload Profile image
-            </p>
-            <input
-              type="file"
-              name="myImage"
-              onChange={onProfileChange}
-              className="my-4 ml-5"
+          </Col>
+          <Col span={12}>
+            <Input
+              label="Pin-Code"
+              maxLength={6}
+              color="brown"
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value)}
             />
-          </div>
-        </div>
-        {/* bank Detaild */}
-        <text className=" font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-          Bank details
-        </text>
-        <div className="flex my-3">
-          <div className="w-72  mt-3 ml-5 lg:ml-0">
+          </Col>
+
+          {/* bank Detaild */}
+
+          <Col span={12}>
             <Input
               label="Bank Number"
               color="brown"
               value={bankDeatails?.bankNumber}
               onChange={(e) =>
-                setBankDeatils({ ...bankDeatails, bankNumber: e.target.value })
+                setBankDeatils({
+                  ...bankDeatails,
+                  bankNumber: e.target.value,
+                })
               }
             />
+          </Col>
+          <Col span={12}>
+            <Input
+              label="Bank IFSC Code"
+              color="brown"
+              value={bankDeatails?.bankIfscCode}
+              onChange={(e) =>
+                setBankDeatils({
+                  ...bankDeatails,
+                  bankIfscCode: e.target.value,
+                })
+              }
+            />
+          </Col>
+        </Row>
+        <div className="flex items-start justify-around mt-3">
+          <div className="">
+            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+              AadharCard image
+            </p>
+
+            <UploadFileComponents handleUpload={onImageChange} />
           </div>
-          <div className="flex flex-wrap items-center mt-3 ml-5 lg:ml-0">
-            <div className="w-72">
-              <Input
-                label="Bank IFSC Code"
-                color="brown"
-                value={bankDeatails?.bankIfscCode}
-                onChange={(e) =>
-                  setBankDeatils({
-                    ...bankDeatails,
-                    bankIfscCode: e.target.value,
-                  })
-                }
-              />
-            </div>
+          <div>
+            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+              Pancard image
+            </p>
+
+            <UploadFileComponents handleUpload={onPanChange} />
+          </div>
+          <div>
+            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+              Profile image
+            </p>
+
+            <UploadFileComponents handleUpload={onProfileChange} />
           </div>
         </div>
         {/* password */}
