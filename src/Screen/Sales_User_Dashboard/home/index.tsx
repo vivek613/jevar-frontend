@@ -25,8 +25,8 @@ const SalesHome = () => {
     setOpenModal((cur) => !cur);
   };
   const handleOpenForPayment = () => {
-    setOpenModalForPayment((cur) => !cur);
-    setGraphData(jewellerPaymentCount);
+    handleOpen();
+    setGraphData(jewellerPaymentCount?.result);
   };
   const getProductPayment = async () => {
     await API.User_fetchMonthIncome(
@@ -99,7 +99,7 @@ const SalesHome = () => {
     getPaymentDue();
     getJewellerPayment();
   }, []);
-
+  console.log("jewellerPaymentCount", jewellerPaymentCount);
   return (
     <div className="bg-[#f0f2f5]  p-3">
       <Row gutter={[24, 24]}>
@@ -135,7 +135,7 @@ const SalesHome = () => {
             bordered={true}
             className="min-h-[180px] mt-3"
           >
-            <span className="font-bold text-lg">{`${jewellerPaymentCount?.jewellerPaymentDone?.length} jewellers paid ${jewellerPaymentCount?.jewellerPaymentNotDone?.length} remaining
+            <span className="font-bold text-lg">{`${jewellerPaymentCount?.result?.length} jewellers paid ${jewellerPaymentCount?.jewellerPaymentNotDone} remaining
 `}</span>
 
             <Button

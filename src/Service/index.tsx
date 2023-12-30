@@ -185,6 +185,27 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
+  salesUser_edit: async (id: any, token: any, body: object, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.put(
+        `${BASE_URL}/api/v1/admin/editSales/${id}`,
+        body,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
   normalUser_customer_edit: async (token: any, body: object, dispatch: any) => {
     dispatch(setLoader(true));
     try {
@@ -508,7 +529,11 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
-  normalUser_checkProduct_get: async (token: any, dispatch: any) => {
+  normalUser_checkProduct_get: async (
+    id: string,
+    token: any,
+    dispatch: any
+  ) => {
     dispatch(setLoader(true));
     try {
       const headers = {
@@ -516,7 +541,7 @@ export const API = {
         Authorization: `Bearer ${token}`,
       };
       const data = await axios.get(
-        `${BASE_URL}/api/v1/usedProduct/get_all_product_for_resell`,
+        `${BASE_URL}/api/v1/usedProduct/get_all_product_for_resell/${id}`,
         {
           headers: headers,
         }
@@ -572,7 +597,26 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
-
+  mainUser_productDelete: async (id: any, token: any, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.get(
+        `${BASE_URL}/api/v1/mainUser/delete_product/${id}`,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
   mainUser_Register: async (body: any, dispatch: any) => {
     dispatch(setLoader(true));
     try {
@@ -701,8 +745,34 @@ export const API = {
         "content-type": "application/json",
         Authorization: `Bearer ${token}`,
       };
-      const data = await axios.patch(
+      const data = await axios.post(
         `${BASE_URL}/api/v1/salesUser/approve-request/${id}`,
+        body,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
+  mainUser_disable: async (
+    id: any,
+    token: any,
+    body: object,
+    dispatch: any
+  ) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.put(
+        `${BASE_URL}/api/v1/admin/editJewellwer/${id}`,
         body,
         {
           headers: headers,
@@ -752,7 +822,7 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
-  mainUser_customerList: async (token: any, dispatch: any) => {
+  mainUser_customerList: async (id: any, token: any, dispatch: any) => {
     dispatch(setLoader(true));
     try {
       const headers = {
@@ -760,7 +830,7 @@ export const API = {
         Authorization: `Bearer ${token}`,
       };
       const data = await axios.get(
-        `${BASE_URL}/api/v1/mainUser/customer/get_all_customer`,
+        `${BASE_URL}/api/v1/mainUser/customer/get_all_customer/${id}`,
         {
           headers: headers,
         }
@@ -880,14 +950,15 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
-  mainUser_getProduct: async (token: any, dispatch: any) => {
+  mainUser_getProduct: async (id: any, token: any, dispatch: any) => {
     dispatch(setLoader(true));
     try {
       const headers = {
         "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
       };
       const data = await axios.get(
-        `${BASE_URL}/api/v1/mainUser/customer/get_product`,
+        `${BASE_URL}/api/v1/mainUser/customer/get_product/${id}`,
         {
           headers: headers,
         }
@@ -921,9 +992,10 @@ export const API = {
   },
   mainUser_addProduct: async (token: any, body: any, dispatch: any) => {
     dispatch(setLoader(true));
+    console.log("body", body);
     try {
       const headers = {
-        "content-type": "multipart/form-data",
+        "content-type": "application/json",
         Authorization: `Bearer ${token}`,
       };
       const data = await axios.post(

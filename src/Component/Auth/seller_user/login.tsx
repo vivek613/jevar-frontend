@@ -35,7 +35,7 @@ const Login: React.FC<LoginInterface> = () => {
           toast.success(response?.data.message);
           navigation("/");
         } else {
-          toast.error("user not found!");
+          toast.error(response?.data.message || "User Not Found");
         }
       })
       .catch((err) => {

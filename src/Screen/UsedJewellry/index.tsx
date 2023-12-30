@@ -11,10 +11,7 @@ interface UsedJewellrInterface {}
 const UsedJewellry: React.FC<UsedJewellrInterface> = () => {
   const dispatch = useDispatch();
   const [type, setType] = React.useState("true");
-  const [colors, setColors] = React.useState("");
-  const [priceStart, setPriceStart] = React.useState("");
-  const [priceEnd, setPriceEnd] = React.useState("");
-  const [conditions, setConditions] = React.useState("");
+
   const [show, setShow] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [data, setdata] = useState<Array<any>>([]);
@@ -32,11 +29,12 @@ const UsedJewellry: React.FC<UsedJewellrInterface> = () => {
   const getProductForSell = async () => {
     await API.normalUser_checkProduct_Allget(dispatch)
       .then((response) => {
-        const typeConvert = type == "true" ? true : false;
-        const data = response?.data.data.filter((item: any, index: number) => {
-          return item.is_premium_product == typeConvert;
-        });
-        setdata(data);
+        console.log("respo", response);
+        // const typeConvert = type == "true" ? true : false;
+        // const data = response?.data.data.filter((item: any, index: number) => {
+        //   return item.is_premium_product == typeConvert;
+        // });
+        setdata(response?.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -164,19 +162,17 @@ const UsedJewellry: React.FC<UsedJewellrInterface> = () => {
                     <FaStar className="mx-1 text-light_gold font-roboto_bold absolute right-3 top-3 text-xl" />
                   )}
                   <img
-                    src={
-                      "https://5.imimg.com/data5/BN/FC/MD/ANDROID-20950968/product-jpeg.jpg"
-                    }
+                    src={`${process.env.REACT_APP_BASE_URL}/${item.product_images[0]}`}
                     alt=""
                     className="w-16 h-16 md:w-36 md:h-36 lg:w-40 lg:h-40 2xl:w-44 2xl:h-44 rounded-xl"
                   />
                   <div className="w-24 md:w-32 mt-1 lg:mt-2 grid place-items-center">
                     <p className="lg:text-[1.05rem] leading-6 md:text-md text-xs font-roboto_medium text-center line-clamp-1 w-36">
-                      {item.product_name}
+                      {item.product_type}
                     </p>
                     <div className="mt-2">
                       <text className="lg:text-lg md:text-md text-xs font-roboto_medium text-center text-primary">
-                        ₹{item.price}
+                        ₹{item.total_price}
                       </text>
                     </div>
                   </div>

@@ -5,17 +5,21 @@ import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 
 interface UploadInterface {
   handleUpload: (file: object) => void;
+  listType?: any;
 }
-const UploadFileComponents: React.FC<UploadInterface> = ({ handleUpload }) => {
+const UploadFileComponents: React.FC<UploadInterface> = ({
+  handleUpload,
+  listType,
+}) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const props: UploadProps = {
-    // onRemove: (file) => {
-    //   const index = fileList.indexOf(file);
-    //   const newFileList = fileList.slice();
-    //   newFileList.splice(index, 1);
-    //   setFileList(newFileList);
-    // },
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
     beforeUpload: (file) => {
       setFileList([file]);
       console.log("file", file);
@@ -27,7 +31,7 @@ const UploadFileComponents: React.FC<UploadInterface> = ({ handleUpload }) => {
 
   return (
     <>
-      <Upload {...props}>
+      <Upload listType={listType} {...props}>
         <Button icon={<UploadOutlined />}>Select File</Button>
       </Upload>
     </>

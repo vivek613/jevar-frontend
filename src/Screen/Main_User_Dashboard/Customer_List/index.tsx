@@ -38,13 +38,14 @@ const CustomerList: React.FC<CustomerListInterface> = () => {
   }, []);
 
   const getCustomer = async () => {
-    await API.mainUser_customerList(userdata.user.token, dispatch)
+    await API.mainUser_customerList(
+      userdata.user.user.id,
+      userdata.user.token,
+      dispatch
+    )
       .then((response) => {
         if (response?.status == 200) {
-          const filteredObjects = response.data.response.filter((item: any) =>
-            item.jeweller_ids.includes(userdata.user.user.id)
-          );
-          setCustomer(filteredObjects);
+          setCustomer(response.data.response);
         } else {
           toast.error("Something went wrong!");
         }

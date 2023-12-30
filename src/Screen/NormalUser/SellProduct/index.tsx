@@ -14,12 +14,13 @@ const SellProduct = () => {
   }, []);
 
   const getSellProduct = async () => {
-    await API.normalUser_checkProduct_get(userdata.user.token, dispatch)
+    await API.normalUser_checkProduct_get(
+      userdata.user.user.id,
+      userdata.user.token,
+      dispatch
+    )
       .then((response) => {
-        const data = response?.data.data.filter((item: any, index: any) => {
-          return item.user_id == userdata.user.user.id;
-        });
-        setdata(data);
+        setdata(response?.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -43,6 +44,7 @@ const SellProduct = () => {
       });
   };
 
+  console.log("userdata", userdata);
   return (
     <div className="w-full h-full bg-white">
       {data.length != 0 ? (
@@ -80,7 +82,7 @@ const SellProduct = () => {
                       product name
                     </text>
                     <text className="text-lg font-roboto_regular">
-                      {item.product_name}
+                      {item.product_type}
                     </text>
                   </div>
                   <div className="flex items-center justify-between mb-2">
@@ -88,23 +90,16 @@ const SellProduct = () => {
                       product price
                     </text>
                     <text className="text-lg font-roboto_regular">
-                      ₹{item.price}
+                      ₹{item.total_price}
                     </text>
                   </div>
-                  <div className="flex items-center justify-between mb-2">
-                    <text className="text-lg font-roboto_medium ">
-                      making charges
-                    </text>
-                    <text className="text-lg font-roboto_regular">
-                      ₹{item.making_charges}
-                    </text>
-                  </div>
+
                   <div className="flex items-center justify-between mb-2">
                     <text className="text-lg font-roboto_medium ">
                       buy date
                     </text>
                     <text className="text-lg font-roboto_regular">
-                      {moment(item.product_buying_date).format("YYYY-MM-DD")}
+                      {moment(item.buying_date).format("YYYY-MM-DD")}
                     </text>
                   </div>
                   <div className="flex items-center justify-between mb-2">
@@ -112,19 +107,19 @@ const SellProduct = () => {
                       discription
                     </text>
                     <text className="text-lg font-roboto_regular">
-                      {item.discription}
+                      {item.description}
                     </text>
                   </div>
                   <div className="flex items-center justify-between mb-2">
                     <text className="text-lg font-roboto_medium ">phone</text>
                     <text className="text-lg font-roboto_regular">
-                      {item.user_phone}
+                      {userdata?.user?.user?.mobile}
                     </text>
                   </div>
                   <div className="flex items-center justify-between mb-2">
                     <text className="text-lg font-roboto_medium ">email</text>
                     <text className="text-lg font-roboto_regular">
-                      {item.user_email}
+                      {userdata?.user?.user?.email}
                     </text>
                   </div>
 

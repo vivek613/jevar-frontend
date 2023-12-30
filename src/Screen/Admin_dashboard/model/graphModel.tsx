@@ -15,7 +15,7 @@ const GraphModel = (props: any) => {
         onOk={props.handleOpen}
         onCancel={handleCancel}
         footer={false}
-        width={800}
+        width={900}
       >
         <TableComponents TableData={TableData} />
       </Modal>

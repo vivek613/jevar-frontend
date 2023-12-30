@@ -56,13 +56,13 @@ const UsedJewellryDetails = (props: any) => {
         console.log(err);
       });
   };
-
+  console.log("sss", data);
   return (
     <div>
       <div className="w-full h-auto lg:px-16 lg:py-10">
         <div className="lg:flex">
           <div className="hidden lg:block w-[38rem]">
-            <ImageGallery
+            {/* <ImageGallery
               items={data[0].product_image}
               showFullscreenButton={true}
               infinite
@@ -70,11 +70,11 @@ const UsedJewellryDetails = (props: any) => {
               showNav={false}
               slideDuration={1000}
               thumbnailPosition="left"
-            />
+            /> */}
           </div>
           <div className="flex items-center justify-center">
             <div className="lg:hidden w-[25rem]">
-              <ImageGallery
+              {/* <ImageGallery
                 items={data[0].product_image}
                 showFullscreenButton={true}
                 infinite
@@ -82,12 +82,12 @@ const UsedJewellryDetails = (props: any) => {
                 showNav={false}
                 slideDuration={1000}
                 thumbnailPosition="bottom"
-              />
+              /> */}
             </div>
           </div>
           <div className="mx-5 lg:mx-0 lg:ml-12 mt-5 lg:mt-0">
             <text className="block text-xl text-black font-roboto_medium tracking-wide capitalize">
-              {queryParams.get("product_name")}
+              {queryParams.get("product_type")}
             </text>
             <div className="flex items-center mt-2">
               <text className="block text-base text-primary font-roboto_black tracking-wide">
@@ -106,7 +106,7 @@ const UsedJewellryDetails = (props: any) => {
                   price
                 </text>
                 <text className="block text-xl text-primary font-roboto_bold tracking-wide text-center">
-                  ₹{queryParams.get("price")}
+                  ₹{queryParams.get("total_price")}
                 </text>
               </div>
               {/* <div className="ml-8">
@@ -142,18 +142,7 @@ const UsedJewellryDetails = (props: any) => {
             {/* other product */}
           </div>
         </div>
-        {/* <div className="">
-          <div>
-            <text className="block text-center mt-16 text-3xl font-roboto_medium text-gray-700 tracking-wider">
-              You May Also Like
-            </text>
-            <div className="flex items-center justify-center mt-3 ">
-              <div className="border-b-2 w-36 border-b-secondry" />
-            </div>
-          </div>
-          <ProductCrouseal />
-        </div> */}
-        {/* info */}
+
         <div>
           <text className="block text-center mt-16 text-2xl lg:text-3xl font-roboto_medium text-gray-700 tracking-wider">
             Product Information

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { API } from "../../../Service";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import GraphModel from "../model/graphModel";
 import PaymentGraphModel from "../model/paymentGraphModel";
@@ -8,26 +8,26 @@ import { monthData } from "../../../utils/Utils";
 import { Button, Card, Col, Row, Space, Switch } from "antd";
 import CardDefault from "../../../Component/Card/Card";
 import TableUser from "../Table/TableUser";
+import EditModel from "../model/paymentGraphModel";
 
 const AdminHome = () => {
   const userdata = useSelector((state: any) => state.adminAuth);
   const d = new Date();
-
+  console.log("vivek", userdata);
   const dispatch = useDispatch();
   const [totalJeweller, setTotalJeweller] = useState<any>();
   const [totalSalesUser, setTotalSalesUser] = useState<any>();
   const [totalAllUser, setTotalAllUser] = useState<any>();
   const [paymentDetails, setPaymentDetails] = useState<any>({});
   const [openModal, setOpenModal] = React.useState(false);
-  const [openModalForPayment, setOpenModalForPayment] = React.useState(false);
+  const [openModalForEdit, setOpenModalForEdit] = React.useState(false);
 
   const [graphData, setGraphData] = useState();
   const handleOpen = () => {
     setOpenModal((cur) => !cur);
   };
   const handleOpenForPayment = () => {
-    setOpenModalForPayment((cur) => !cur);
-    setGraphData(paymentDetails);
+    setOpenModalForEdit(false);
   };
 
   const getAllUser = async () => {
@@ -82,6 +82,25 @@ const AdminHome = () => {
         console.log(err);
       });
   };
+  const handleEdit = (data: any) => {
+    setOpenModalForEdit(true);
+    setGraphData(data);
+  };
+  const handleSubmit = async (values: any) => {
+    console.log("values", values);
+
+    await API.salesUser_edit(values.id, userdata.user.token, values, dispatch)
+      .then((response) => {
+        // getUser();
+        console.log("respose", response);
+        toast.success(response?.data?.message);
+        setOpenModalForEdit(false);
+        getSalesUser();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const columns = [
     {
       title: "Name",
@@ -99,27 +118,14 @@ const AdminHome = () => {
       key: "address",
     },
     {
-      title: "Aadhar Card Image",
-      dataIndex: "adhar_card_image",
-      key: "adhar_card_image",
-      render: (text: string) => (
-        <a href={text} target="_blank" rel="noopener noreferrer">
-          View
-        </a>
-      ),
+      title: "Total Amount",
+      dataIndex: "total_amount",
+      key: "total_amount",
     },
     {
-      title: "PAN Card Image",
-      dataIndex: "pancard_image",
-      key: "pancard_image",
-      render: (text: string) =>
-        text ? (
-          <a href={text} target="_blank" rel="noopener noreferrer">
-            View
-          </a>
-        ) : (
-          "N/A"
-        ),
+      title: "Remaining Amount",
+      dataIndex: "remaining_amount",
+      key: "remaining_amount",
     },
     {
       title: "Is Verified Account",
@@ -128,7 +134,11 @@ const AdminHome = () => {
       render: (isVerified: boolean, record: object) => (
         <Switch
           checked={isVerified}
-          onChange={(checked) => handleSwitchChange(checked, record)}
+          className="bg-blue-gray-500"
+          onChange={(e) => {
+            const checked = e;
+            handleSwitchChange(checked, record);
+          }}
         />
       ),
     },
@@ -137,13 +147,15 @@ const AdminHome = () => {
       key: "actions",
       render: (record: any) => (
         <Space size="middle">
-          <Button
-            onClick={() =>
-              handleDownload(record.adhar_card_image, "Aadhar Card")
-            }
-          >
-            Download Aadhar
-          </Button>
+          {record.adhar_card_image && (
+            <Button
+              onClick={() =>
+                handleDownload(record.adhar_card_image, "Aadhar Card")
+              }
+            >
+              Download Aadhar
+            </Button>
+          )}
           {record.pancard_image && (
             <Button
               onClick={() => handleDownload(record.pancard_image, "PAN Card")}
@@ -151,21 +163,68 @@ const AdminHome = () => {
               Download PAN
             </Button>
           )}
+          <Button onClick={() => handleEdit(record)}>Edit</Button>
         </Space>
+      ),
+    },
+  ];
+  const columnsForJewellery = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Mobile",
+      dataIndex: "mobile",
+      key: "mobile",
+    },
+
+    {
+      title: "Total Amount",
+      dataIndex: "totalPayment",
+      key: "totalPayment",
+    },
+    {
+      title: "Product Count",
+      dataIndex: "productCount",
+      key: "productCount",
+    },
+    {
+      title: "Disable",
+      dataIndex: "delete",
+      key: "disable",
+      render: (idDelete: boolean, record: object) => (
+        <Switch
+          checked={idDelete}
+          className="bg-blue-gray-500"
+          onChange={(e) => {
+            const checked = e;
+            handleSwitchChangeForJeweller(checked, record);
+          }}
+        />
       ),
     },
   ];
 
   const handleSwitchChange = async (checked: boolean, record: any) => {
     // Handle switch change logic, e.g., update the "is_verify_account" field in your data.
-    console.log(`Switch ${checked ? "on" : "off"} for ${record.name}`);
-    const body = {
+
+    const checkData = {
       check: checked,
     };
-    await API.salesUser_approve(record.id, body, userdata.user.token, dispatch)
+    await API.salesUser_approve(
+      record.id,
+      userdata.user.token,
+      checkData,
+
+      dispatch
+    )
       .then((response) => {
         if (response?.status == 200) {
-          console.log("respo", response);
+          toast.success(response.data.message);
+
+          getSalesUser();
         } else {
           toast.error("Something went wrong!");
         }
@@ -174,7 +233,34 @@ const AdminHome = () => {
         console.log(err);
       });
   };
+  const handleSwitchChangeForJeweller = async (
+    checked: boolean,
+    record: any
+  ) => {
+    // Handle switch change logic, e.g., update the "is_verify_account" field in your data.
 
+    const checkData = {
+      delete: checked,
+    };
+    await API.mainUser_disable(
+      record.id,
+      userdata.user.token,
+      checkData,
+
+      dispatch
+    )
+      .then((response) => {
+        if (response?.status == 200) {
+          getJewellerUser();
+          toast.success(response.data.message);
+        } else {
+          toast.error("Something went wrong!");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const handleDownload = (imageUrl: any, cardType: any) => {
     // Implement download logic, e.g., open a new window or trigger a download.
     const link = document.createElement("a");
@@ -243,7 +329,7 @@ const AdminHome = () => {
               bordered={true}
               className="min-h-[180px] mt-3"
             >
-              <span className="font-bold text-lg">{`${paymentDetails?.jewellerPaymentDone?.length} jewellers paid ${paymentDetails?.jewellerPaymentNotDone?.length} remaining
+              <span className="font-bold text-lg">{`${paymentDetails?.result?.length} jewellers paid ${paymentDetails?.jewellerPaymentNotDone} remaining
 `}</span>
 
               <Button
@@ -260,6 +346,13 @@ const AdminHome = () => {
           <h2 className="font-bold text-lg">Sales Register</h2>
           <TableUser TableData={totalSalesUser?.TotalData} columns={columns} />
         </div>
+        <div className="mt-3">
+          <h2 className="font-bold text-lg">Jewellery Register</h2>
+          <TableUser
+            TableData={totalJeweller?.TotalData}
+            columns={columnsForJewellery}
+          />
+        </div>
       </div>
       {openModal && (
         <GraphModel
@@ -269,13 +362,15 @@ const AdminHome = () => {
           data={graphData}
         />
       )}
-      {openModalForPayment && paymentDetails && (
-        <PaymentGraphModel
-          open={openModalForPayment}
+      {openModalForEdit && paymentDetails && (
+        <EditModel
+          open={openModalForEdit}
           handleOpen={() => handleOpenForPayment()}
+          handleSubmit={handleSubmit}
           data={graphData}
         />
       )}
+      <ToastContainer />
     </>
   );
 };

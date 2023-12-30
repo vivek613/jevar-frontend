@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Button,
   IconButton,
   Input,
   Typography,
@@ -17,23 +16,20 @@ import ProductView from "../../../Component/addProductForUser/productView";
 import { ToastContainer, toast } from "react-toastify";
 import OTPInput from "../../../Component/OTPInput";
 import moment from "moment";
+import { Button, Col, Form, Row, Space, Switch, Table } from "antd";
+import UploadFileComponents from "../../../Component/Upload/UploadFile";
+import ProductModel from "../../../Component/addProductForUser/editProductModel";
 
 const tableHead = ["PRODUCT NAME", "HUID", "BUY-DATE", "TOTAL-PRICE", ""];
 
 const UserProfile = () => {
+  const [form] = Form.useForm();
   const userdata = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const [user, setUser] = React.useState<any>({});
-  const [image, setImage] = React.useState<any>(null);
+
   const [active, setActive] = React.useState(1);
-  const [name, setName] = React.useState("");
-  const [address, setAddress] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [state, setState] = React.useState("");
-  const [editName, setEditName] = React.useState(false);
-  const [editAddress, setEditAddress] = React.useState(true);
-  const [editCity, setEditCity] = React.useState(true);
-  const [editState, setEditState] = React.useState(true);
+
   const [product, setProduct] = React.useState<Array<any>>([]);
   const [showProductView, setShowProductView] = React.useState(false);
   const [viewData, setViewData] = React.useState({});
@@ -45,57 +41,80 @@ const UserProfile = () => {
   const handleOpen = () => setOpen(!open);
   const handleOpenEmail = () => setOpenEmail(!openEmail);
 
-  const next = () => {
-    if (active === 10) return;
-
-    setActive(active + 1);
-  };
-
-  const prev = () => {
-    if (active === 1) return;
-
-    setActive(active - 1);
-  };
-
-  useEffect(() => {
-    getUser();
-    getProduct();
-    setAddress(user.address);
-    setState(user.state);
-    setCity(user.city);
-  }, []);
-
   const getProductImage = async (itemData: any) => {
-    await API.mainUser_getProduct(userdata.user.token, dispatch)
-      .then((response) => {
-        const datas = response?.data.response.filter(
-          (item: any, index: any) => {
-            return item.product_id == itemData.product_id;
-          }
-        );
-        let imageData: any = [];
-        for (const file of itemData.product_images) {
-          const data = {
-            original: `${file.original}`,
-            thumbnail: `${file.thumbnail}`,
-          };
-          imageData.push(data);
-        }
-        setimages(imageData);
-        setShowProductView(true);
-        setViewData(itemData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setShowProductView(true);
+    setViewData(itemData);
+    // setimages()
   };
+  const columns = [
+    {
+      title: "HUID",
+      dataIndex: "huid",
+      key: "huid",
+    },
+    {
+      title: "Product Type",
+      dataIndex: "product_type",
+      key: "product_type",
+    },
+    {
+      title: "Total Price",
+      dataIndex: "total_price",
+      key: "total_price",
+    },
+    {
+      title: "Buying Date",
+      dataIndex: "buying_date",
+      key: "buying_date",
+    },
+    {
+      title: "Jeweller",
+      dataIndex: "jewellers_name",
+      key: "jewellers_name",
+    },
+    {
+      title: "City",
+      dataIndex: "city",
+      key: "city",
+    },
+    {
+      title: "State",
+      dataIndex: "state",
+      key: "state",
+    },
 
-  const editUser = async () => {
+    {
+      title: "Bill",
+      key: "bill",
+      render: (record: any) => (
+        <Space size="middle">
+          {/* Add any action buttons or links here */}
+          <a
+            href={`${process.env.REACT_APP_BASE_URL}/${record.bill_image}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Bill
+          </a>
+        </Space>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (record: any) => (
+        <Space size="middle" onClick={() => getProductImage(record)}>
+          View more
+        </Space>
+      ),
+    },
+  ];
+  const editUser = async (value: any) => {
     const data = {
-      address: address,
-      city: city,
-      state: state,
-      name: name,
+      address: value.address,
+      city: value.city,
+      state: value.state,
+      name: value.name,
     };
     await API.normalUser_edit(
       userdata.user.user._id,
@@ -104,7 +123,6 @@ const UserProfile = () => {
       dispatch
     )
       .then((response) => {
-        // alert(response?.data);
         getUser();
       })
       .catch((err) => {
@@ -133,12 +151,7 @@ const UserProfile = () => {
       dispatch
     )
       .then((response) => {
-        const filter = response?.data.filterProduct.filter(
-          (item: any, index: any) => {
-            return item.is_product_sell == false;
-          }
-        );
-        setProduct(filter);
+        setProduct(response?.data?.filterProduct);
       })
       .catch((err) => {
         console.log(err);
@@ -146,11 +159,10 @@ const UserProfile = () => {
   };
 
   const handleImageChange = (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectImage(event.target.files[0]);
+    if (event) {
+      setSelectImage(event);
     }
   };
-
   const handleSubmit = async () => {
     const formData = new FormData();
     formData.append("profile_image", selectImage);
@@ -170,12 +182,6 @@ const UserProfile = () => {
         console.log(err);
       });
   };
-
-  // useEffect(() => {
-  //   if (selectImage != "" && userdata.user.user.profile_image.length == 0) {
-  //     // handleSubmit();
-  //   }
-  // }, [selectImage, userdata.user.user.profile_image.length]);
 
   const OTPSendEmail = async () => {
     const body = {
@@ -221,374 +227,145 @@ const UserProfile = () => {
         console.log(err);
       });
   };
+  useEffect(() => {
+    // Set initial values using setFieldsValue
+    form.setFieldsValue({
+      name: user.name || "",
+      email: user.email || "",
+      mobile: user.mobile || "",
+      address: user.address || "",
+      city: user.city || "",
+      state: user.state || "",
+    });
+  }, [user, form]);
+  useEffect(() => {
+    getUser();
+  }, []);
+  useEffect(() => {
+    getProduct();
+  }, [showProductView]);
 
   // alert(user.profile_image.data)
-
   return (
     <div className="w-full h-auto lg:p-10">
-      <div className="lg:flex">
-        <div className="hidden lg:block">
-          {user.profile_image != undefined ? (
-            <Avatar
-              src={`${user.profile_image.data}`}
-              alt="avatar"
-              variant="rounded"
-              withBorder={true}
-              color="amber"
-              className="p-1 w-64 h-64 cursor-pointer"
-              onClick={handleOpen}
-            />
-          ) : (
-            <div className="w-64 h-64">
-              <input
-                onChange={handleImageChange}
-                type="file"
-                name="profile_image"
-                accept="image/*"
-                className="w-64 h-64"
-              />
-              {selectImage && (
-                <button
-                  onClick={handleSubmit}
-                  className="bg-primary p-2 rounded-lg text-white"
-                >
-                  upload
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="flex items-center justify-center lg:hidden my-5">
-          {image ? (
-            <Avatar
-              src={`${user.profile_image.data}`}
-              alt="avatar"
-              variant="rounded"
-              withBorder={true}
-              color="amber"
-              className="p-1 w-36 h-36"
-              onClick={handleOpen}
-            />
-          ) : (
-            <div className="w-64 h-64">
-              <input
-                onChange={handleImageChange}
-                type="file"
-                name="profile_image"
-                accept="image/*"
-                className="w-64 h-64"
-              />
-              {/* {selectImage && (
-                <button onClick={handleSubmit} className="bg-primary">
-                  upload
-                </button>
-              )} */}
-            </div>
-          )}
-        </div>
-        <div className="lg:flex w-full bg-white lg:ml-12 border-2 rounded-lg p-5">
-          <div>
-            <div className="flex items-center justify-between">
-              <p className="font-roboto_black text-lg text-gray-600 tracking-wide">
-                Name
-              </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 cursor-pointer"
-                onClick={() => setEditName(true)}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} lg={8}>
+          <Avatar
+            src={
+              user?.profile_image?.data ||
+              `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'%3E%3Cstyle%3Etext { fill: black; }%3C/style%3E%3Ctext x='50' y='50' font-size='50' text-anchor='middle' dominant-baseline='middle' fill='%23ffffff'%3E${user.name
+                ?.charAt(0)
+                ?.toUpperCase()}%3C/text%3E%3C/svg%3E`
+            }
+            alt="avatar"
+            variant="rounded"
+            withBorder={true}
+            color="amber"
+            className="p-1 w-64 h-64 cursor-pointer"
+            onClick={handleOpen}
+          />
+        </Col>
+        <Col xs={24} lg={16}>
+          <Form
+            form={form}
+            onFinish={editUser}
+            initialValues={{
+              name: user.name ? user.name : "",
+              email: user.email ? user.email : "",
+              mobile: user.mobile ? user.mobile : "",
+              address: user.address ? user.address : "",
+              city: user.city ? user.city : "",
+              state: user.state ? user.state : "",
+            }}
+            layout="vertical"
+          >
+            <Row gutter={[16, 16]}>
+              <Col span={12}>
+                <Form.Item label="Name" name="name">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Email-Id" name="email">
+                  <Input disabled />
+                </Form.Item>
+                {!user.is_verify_email && (
+                  <Button
+                    onClick={OTPSendEmail}
+                    className=" bg-light_gold text-primary text-center tracking-wider  flex justify-end"
+                  >
+                    Verify Email
+                  </Button>
+                )}
+                {user.is_verify_email && (
+                  <p className="ml-3 font-roboto_medium text-primary/80 tracking-wide">
+                    Email Verified
+                  </p>
+                )}
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Phone Number" name="mobile">
+                  <Input disabled />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Address" name="address">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="City" name="city">
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="State" name="state">
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className=" bg-light_gold text-primary text-center tracking-wider"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                />
-              </svg>
-            </div>
-            {editName == false ? (
-              <p className="ml-3 font-roboto_black text-xl text-gray-800 capitalize tracking-wide w-auto">
-                {user.name}
-              </p>
-            ) : (
-              <div className="w-96 my-1">
-                <Input
-                  variant="standard"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  onBlur={() => {
-                    editUser();
-                    setEditName(false);
-                  }}
-                />
-              </div>
-            )}
-            {/* <p className="ml-3 font-roboto_black text-xl text-gray-800 capitalize tracking-wide">
-              {user.name}
-            </p> */}
-            <p className="font-roboto_black text-lg text-gray-600 tracking-wide mt-3">
-              Email-Id
-            </p>
-            <div className="flex items-center">
-              <p className="ml-3 font-roboto_black text-xl text-gray-800 tracking-wide">
-                {user.email}
-              </p>
-              {user.is_verify_email ? (
-                <p className="ml-7 font-roboto_medium text-primary/80 tracking-wide">
-                  {/* verified */}
-                </p>
-              ) : (
-                <Button
-                  onClick={OTPSendEmail}
-                  className="ml-7 bg-light_gold text-primary py-2 px-4 tracking-wider"
-                >
-                  verify
-                </Button>
-              )}
-            </div>
-            <p className="font-roboto_black text-lg text-gray-600 tracking-wide mt-3">
-              Phone Number
-            </p>
-            <p className="ml-3 font-roboto_black text-xl text-gray-800 capitalize tracking-wide">
-              {user.mobile}
-            </p>
-          </div>
-          <div className="border-b-2 lg:border-r-2 h-54 mx-12 my-5 lg:my-0" />
-          <div>
-            <div className="flex items-center justify-between">
-              <p className="font-roboto_black text-lg text-gray-600 tracking-wide mr-4">
-                Address
-              </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 cursor-pointer"
-                onClick={() => setEditAddress(false)}
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                />
-              </svg>
-            </div>
-            {editAddress ? (
-              <p className="ml-3 font-roboto_black text-xl text-gray-800 capitalize tracking-wide w-auto">
-                {user.address}
-              </p>
-            ) : (
-              <div className="w-96 my-1">
-                <Input
-                  variant="standard"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  onBlur={() => {
-                    editUser();
-                    setEditAddress(true);
-                  }}
-                />
-              </div>
-            )}
-            <div className="flex items-center justify-between">
-              <p className="font-roboto_black text-lg text-gray-600 tracking-wide mt-3">
-                City
-              </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 cursor-pointer"
-                onClick={() => setEditCity(false)}
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                />
-              </svg>
-            </div>
-            {editCity ? (
-              <p className="ml-3 font-roboto_black text-xl text-gray-800 capitalize tracking-wide">
-                {user.city}
-              </p>
-            ) : (
-              <div className="w-96 my-1">
-                <Input
-                  variant="standard"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  onBlur={() => {
-                    editUser();
-                    setEditCity(true);
-                  }}
-                />
-              </div>
-            )}
-            <div className="flex items-center justify-between">
-              <p className="font-roboto_black text-lg text-gray-600 tracking-wide mt-3">
-                State
-              </p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="w-5 h-5 cursor-pointer"
-                onClick={() => setEditState(false)}
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                />
-              </svg>
-            </div>
-            {editState ? (
-              <p className="ml-3 font-roboto_black text-xl text-gray-800 capitalize tracking-wide">
-                {user.state}
-              </p>
-            ) : (
-              <div className="w-96 mt-1">
-                <Input
-                  variant="standard"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  onBlur={() => {
-                    editUser();
-                    setEditState(true);
-                  }}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+                Update Profile
+              </Button>
+            </Form.Item>
+          </Form>
+        </Col>
+      </Row>
+      <ProductModel
+        data={viewData}
+        open={showProductView}
+        handel={() => setShowProductView(!showProductView)}
+        sellMode={true}
+      />
       {/* jewellary details */}
       <p className="mt-7 mb-2 text-xl font-roboto_bold text-primary tracking-wide text-center">
         Product Details
       </p>
       <div className="border-b-2 border-secondry w-48 grid m-auto mb-6" />
-      {product.length != 0 ? (
-        <div className="relative overflow-x-auto border-2 sm:rounded-lg">
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-              <tr>
-                {tableHead.map((item, index) => {
-                  return (
-                    <th scope="col" className="px-6 py-3">
-                      {item}
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {product.map((item: any, index: number) => {
-                return (
-                  <tr className="bg-white border-b">
-                    <td
-                      scope="row"
-                      className="px-6 py-2 text-[1rem] font-roboto_medium text-gray-900 whitespace-nowrap capitalize"
-                    >
-                      {item.product_name}
-                    </td>
-                    <td className="px-6 py-2 text-[1rem] font-roboto_regular text-gray-600">
-                      {item.huid}
-                    </td>
-                    <td className="px-6 py-2 text-[1rem] font-roboto_regular capitalize text-gray-800">
-                      {moment(item.buying_date).format("DD-MM-YYYY")}
-                    </td>
-                    <td className="px-6 py-2 text-[1rem] font-roboto_regular text-gray-800">
-                      {item.total_price}
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        className="text-blue font-roboto_medium"
-                        onClick={() => {
-                          getProductImage(item);
-                          // alert(item._id)
-                        }}
-                      >
-                        More
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div>
-          <p className="m-auto text-center mt-[5rem]">
-            Product are not available!
-          </p>
-        </div>
-      )}
-      {/* pagination */}
-      {product.length >= 6 && (
-        <div className="flex items-center justify-center mt-8 gap-8">
-          <IconButton
-            size="sm"
-            variant="outlined"
-            color="blue-gray"
-            onClick={prev}
-            disabled={active === 1}
-          >
-            <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />
-          </IconButton>
-          <Typography color="gray" className="font-normal">
-            Page <strong className="text-blue-gray-900">{active}</strong> of{" "}
-            <strong className="text-blue-gray-900">10</strong>
-          </Typography>
-          <IconButton
-            size="sm"
-            variant="outlined"
-            color="blue-gray"
-            onClick={next}
-            disabled={active === 10}
-          >
-            <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
-          </IconButton>
-        </div>
-      )}
-      <ProductView
-        open={showProductView}
-        handel={() => setShowProductView(!showProductView)}
-        data={viewData}
-        images={images}
+      <Table
+        dataSource={product}
+        columns={columns}
+        rowKey="_id"
+        pagination={false} // If you want to disable pagination
       />
+      {/* pagination */}
+
       {/* edit profile picture */}
       <Dialog size="xs" open={open} handler={handleOpen}>
         <DialogHeader>Edit your profile picture.</DialogHeader>
         <DialogBody divider>
-          <input
-            onChange={handleImageChange}
-            type="file"
-            name="profile_image"
-            accept="image/*"
-            className=""
-          />
+          <UploadFileComponents handleUpload={handleImageChange} />
         </DialogBody>
         <DialogFooter>
-          <Button
-            variant="text"
-            color="red"
-            onClick={handleOpen}
-            className="mr-1"
-          >
+          <Button color="red" onClick={handleOpen} className="mr-1">
             <span>Cancel</span>
           </Button>
           <Button
-            variant="gradient"
             color="green"
             onClick={() => {
               handleSubmit();
@@ -627,8 +404,8 @@ const UserProfile = () => {
             confirm
           </Button>
         </DialogFooter>
-        <ToastContainer />
       </Dialog>
+      <ToastContainer />
     </div>
   );
 };

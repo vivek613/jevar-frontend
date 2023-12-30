@@ -76,7 +76,12 @@ const AddProductFromUser: React.FC<AddProductFromUserInterface> = ({
   };
 
   const addProduct = async (data: any) => {
-    await API.normalUser_add_product(userdata.user.token, data, dispatch)
+    await API.normalUser_add_product(
+      userdata.user.token,
+      data,
+
+      dispatch
+    )
       .then((response) => {
         const data = new FormData();
         for (const file of imageData) {

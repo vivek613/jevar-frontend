@@ -1,11 +1,9 @@
 import { Avatar, Button, Radio } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
-import AddClient from "../../../Component/addClient";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { faker } from "@faker-js/faker";
 import { API, Image_URL } from "../../../Service";
 import { toast } from "react-toastify";
 
@@ -26,7 +24,6 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
 
   useEffect(() => {
     getCustomer();
-    getProduct();
     getProductPayment();
   }, []);
 
@@ -49,13 +46,16 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
   });
 
   const getCustomer = async () => {
-    await API.mainUser_customerList(userdata.user.token, dispatch)
+    await API.mainUser_customerList(
+      userdata.user.user.id,
+      userdata.user.token,
+      dispatch
+    )
       .then((response) => {
         if (response?.status == 200) {
-          const filteredObjects = response.data.response.filter((item: any) =>
-            item.jeweller_ids.includes(userdata.user.user.id)
-          );
-          setCustomer(filteredObjects);
+          console.log("repsoe", response);
+          setCustomer(response.data.response);
+          setProduct(response.data?.ProductCount);
         } else {
           toast.error("Something went wrong!");
         }
@@ -65,19 +65,7 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
       });
   };
 
-  const getProduct = async () => {
-    await API.mainUser_getProduct(userdata.user.token, dispatch)
-      .then((response) => {
-        const data = response?.data.response.filter((item: any, index: any) => {
-          return item.jeweller_id == userdata.user.user.id;
-        });
-        setProduct(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
+  console.log("user", userdata);
   const getProductPayment = async () => {
     await API.mainUser_fetchProductPayment(userdata.user.token, dispatch)
       .then((response) => {
@@ -220,9 +208,9 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
                 </p>
                 <Button
                   onClick={() => {
-                    if (productPay != 0) {
+                    if (userdata?.user?.user?.totalPayment != 0) {
                       const data = {
-                        amount: productPay * 100,
+                        amount: userdata?.user?.user?.totalPayment,
                       };
 
                       payNow(data);
@@ -232,7 +220,7 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
                   }}
                   className="bg-primary text-lg px-8 py-1 mt-3 font-roboto_medium"
                 >
-                  ₹ {convert(productPay)}
+                  ₹ {convert(userdata?.user?.user?.totalPayment)}
                 </Button>
               </div>
               {/* <div className="w-full border-2 p-2 mr-5">

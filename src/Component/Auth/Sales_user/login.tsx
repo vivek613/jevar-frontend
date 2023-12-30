@@ -30,8 +30,7 @@ const SalesLogin: React.FC<LoginInterface> = () => {
           toast.success(response?.data.message);
           navigation("/");
         } else {
-          console.log("dddd", response);
-          toast.info(response?.data.message);
+          toast.error(response?.data.message || "User Not Found");
         }
       })
       .catch((err) => {

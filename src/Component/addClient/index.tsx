@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoader } from "../../Stores/actions/loader";
 import moment from "moment";
 import { logout } from "../../Stores/actions/auth";
+import UploadFileComponents from "../Upload/UploadFile";
 
 const AddClient = (props: any) => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const AddClient = (props: any) => {
   const [price, setprice] = useState("");
   const [huide, setHuide] = useState("");
   const [jType, setJType] = useState("");
-  const [bill, setBill] = useState("");
+
   const [acHave, setAcHave] = useState("");
   const [billData, setBillData] = useState<any>(null);
 
@@ -54,7 +55,12 @@ const AddClient = (props: any) => {
       payment_mode: "offline",
     };
     const token = data.token;
-    await API.normalUser_add_product(token, body, dispatch)
+    await API.mainUser_addProduct(
+      token,
+      body,
+
+      dispatch
+    )
       .then((response) => {
         toast.success("Successfully add client.");
         props.handleOpen();
@@ -77,35 +83,33 @@ const AddClient = (props: any) => {
   };
 
   const addProductAlredyUser = async (data: any) => {
-    const huids: any = parseInt(huide);
-    const date: any = moment();
-    const is_verified: any = true;
-    const formData = new FormData();
-    formData.append("user_id", data.id);
-    formData.append("product_type", jType);
-    formData.append("huid", huids);
-    formData.append("bill_image", billData);
-    formData.append("buying_date", date);
-    formData.append("price", price);
-    formData.append("jeweller_id", userdata.user.user.id);
-    formData.append("jewellers_name", userdata?.user?.user?.name);
-    formData.append("purchase_from", pName);
-
-    formData.append("jewellers_address", userdata.user.user.address);
-    formData.append("city", userdata.user.user.city);
-    formData.append("pincode", userdata.user.user.pincode);
-    formData.append("state", userdata.user.user.state);
-    formData.append("country", "India");
-    formData.append("is_verified", is_verified);
-    formData.append("payment_mode", "offline");
-    await API.mainUser_addProduct(userdata.user.token, formData, dispatch)
+    const body = {
+      user_id: data,
+      purchase_from: pName,
+      product_type: jType,
+      huid: huide,
+      price: price,
+      bill_image: billData,
+      buying_date: moment(),
+      jeweller_id: userdata.user.user.id,
+      jewellers_name: userdata?.user?.user?.name,
+      jewellers_address: userdata.user.user.address,
+      city: userdata.user.user.city,
+      pincode: userdata.user.user.pincode,
+      state: userdata.user.user.state,
+      country: "India",
+      is_verified: true,
+      payment_mode: "offline",
+    };
+    await API.mainUser_addProduct(userdata.user.token, body, dispatch)
       .then((response) => {
         if (response?.status == 200) {
-          toast.success("Successfully add client.");
+          toast.success(response?.data.message);
+
           props.handleOpen();
           resetState();
           const addId = {
-            id: data._id,
+            id: data,
             jeweller_id: userdata.user.user.id,
           };
           editClient(addId);
@@ -119,7 +123,7 @@ const AddClient = (props: any) => {
           };
           addProductPayment(datas);
         } else {
-          alert(response?.status);
+          toast.success(response?.data.message);
         }
       })
       .catch((err) => {
@@ -167,7 +171,7 @@ const AddClient = (props: any) => {
     };
     await API.confirmOTP(data, dispatch)
       .then((response) => {
-        addProduct(response?.data.data);
+        addProduct(response?.data.data.id);
       })
       .catch((err) => {
         console.log(err);
@@ -190,18 +194,33 @@ const AddClient = (props: any) => {
     };
     await API.mainUser_fetchCustomer(userdata.user.token, data, dispatch)
       .then((response) => {
-        addProductAlredyUser(response?.data.data);
+        console.log("respoe", response);
+        addProductAlredyUser(response?.data.data.id);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  const addProductImage = async (data: any) => {
+    await API.Common_add_Image(data, dispatch)
+      .then((response) => {
+        setBillData(response?.data?.data?.thumbnail);
+
+        toast.success(response?.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const selectBill = (event: any) => {
-    if (event.target.files && event.target.files[0]) {
-      const img = event.target.files[0];
-      setBill(URL.createObjectURL(img));
-      setBillData(img);
+    if (event) {
+      const img = event;
+
+      const data = new FormData();
+      data && data.append("image", img);
+
+      addProductImage(data);
     }
   };
 
@@ -213,15 +232,18 @@ const AddClient = (props: any) => {
     setpName("");
     setHuide("");
     setJType("");
-    setBillData({});
-    setBill("");
+    setBillData("");
     setClientName("");
     setEmail("");
     setMobile("");
     setOTP("");
     setStatus("");
+    setprice("");
   };
-  console.log("vvvv", userdata);
+
+  useEffect(() => {
+    resetState();
+  }, []);
 
   return (
     <React.Fragment>
@@ -269,7 +291,7 @@ const AddClient = (props: any) => {
                   size="lg"
                   color="gray"
                   value={huide}
-                  maxLength={6}
+                  // maxLength={6}
                   onChange={(e) => {
                     setHuide(e.target.value);
                   }}
@@ -298,7 +320,10 @@ const AddClient = (props: any) => {
             />
             <div className="flex items-center gap-4 cursor-pointer">
               <p className="capitalize font-roboto_regular">upload bill :</p>
-              <input type="file" onChange={selectBill} />
+
+              <UploadFileComponents
+                handleUpload={selectBill}
+              ></UploadFileComponents>
             </div>
             <div className="w-full gap-5">
               <Select label="Select Veriants" onChange={selectHaveAccount}>
@@ -392,8 +417,7 @@ const AddClient = (props: any) => {
                       mobile &&
                       pName &&
                       huide &&
-                      jType &&
-                      bill
+                      jType
                     ) {
                       const data = {
                         email: email,

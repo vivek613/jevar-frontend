@@ -22,6 +22,12 @@ const TableComponents: React.FC<TableInterface> = ({ TableData }) => {
     "bank_number",
     "pancard_image",
     "is_verify_account",
+    "delete",
+
+    "paidCount",
+
+    "reminingCount",
+    "jeweller_id",
   ];
   const columns = Object.keys(TableData[0])
     .filter((key) => !excludedColumns.includes(key))

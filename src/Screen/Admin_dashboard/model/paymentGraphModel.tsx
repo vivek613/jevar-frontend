@@ -1,101 +1,64 @@
 import { Dialog } from "@material-tailwind/react";
 import React from "react";
-import ReactECharts from "echarts-for-react";
+import { Form, Input, InputNumber, Button } from "antd";
 
-const PaymentGraphModel = (props: any) => {
+const EditModel = (props: any) => {
   console.log("props", props);
-  const { jewellerPaymentDone, jewellerPaymentNotDone } = props.data;
+  const onFinish = (values: any) => {
+    props.handleSubmit(values);
 
-  const mergedData = [
-    ...jewellerPaymentDone.map((item: any) => ({
-      ...item,
-      type: true,
-    })),
-    ...jewellerPaymentNotDone.map((item: any) => ({
-      ...item,
-      type: false,
-    })),
-  ];
-
-  const xData = mergedData.map((item) => item.jeweller_name.name);
-  const uniqueXData = [...new Set(xData)];
-  const paymentDoneData = mergedData
-    .filter((item) => item.type === true)
-    .map((item) => item.count);
-  const paymentNotDoneData = mergedData
-    .filter((item) => item.type === false)
-    .map((item) => item.count);
-  console.log("payment", paymentDoneData, paymentNotDoneData);
-  const option = {
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "cross",
-      },
-      formatter: function (params: any) {
-        // Iterate through all data points in the tooltip
-        const lines = params.map((param: any) => {
-          const seriesName = param.seriesName;
-          const data = param.data;
-          return `${seriesName}: ${data}`;
-        });
-
-        // Display data with line breaks in the tooltip
-        return `${params[0].axisValue}<br/>${lines.join("<br/>")}`;
-      },
-    },
-    xAxis: {
-      type: "category",
-      data: uniqueXData,
-      name: "Jeweller Name",
-      nameLocation: "middle",
-      nameGap: 30,
-      nameTextStyle: {
-        fontSize: 14,
-        fontWeight: "bold",
-      },
-    },
-    yAxis: [
-      {
-        type: "value",
-        name: "Amount",
-        position: "left",
-      },
-    ],
-    series: [
-      {
-        name: "Payment Done",
-        type: "bar",
-        data: paymentDoneData,
-        itemStyle: {
-          color: "blue",
-        },
-      },
-      {
-        name: "Payment Not Done",
-        type: "bar",
-        data: paymentNotDoneData,
-        itemStyle: {
-          color: "red",
-        },
-      },
-    ],
+    // Handle form submission logic here
   };
-
   return (
     <React.Fragment>
       <Dialog size="sm" open={props.open} handler={props.handleOpen}>
         <div className="p-5">
-          <h2>Total Payment details</h2>
-          <ReactECharts
-            option={option}
-            style={{ height: "400px", width: "100%" }}
-            opts={{ renderer: "svg" }}
-          />
+          <h2>Sales Edit</h2>
+          <Form
+            name="userProfile"
+            initialValues={props.data} // Use the user data to pre-fill the form
+            onFinish={onFinish}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+          >
+            <Form.Item label="" name="id">
+              {/* <InputNumber style={{ width: "100%" }} disabled /> */}
+            </Form.Item>
+
+            <Form.Item label="Total Amount" name="total_amount">
+              <InputNumber style={{ width: "100%" }} />
+            </Form.Item>
+
+            <Form.Item label="Remaining Amount" name="remaining_amount">
+              <InputNumber style={{ width: "100%" }} />
+            </Form.Item>
+
+            <Form.Item label="Name" name="name">
+              <Input />
+            </Form.Item>
+
+            <Form.Item label="Mobile" name="mobile">
+              <Input />
+            </Form.Item>
+
+            <Form.Item label="Address" name="address">
+              <Input.TextArea />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="bg-primary  text-sm"
+              >
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
       </Dialog>
     </React.Fragment>
   );
 };
 
-export default PaymentGraphModel;
+export default EditModel;
