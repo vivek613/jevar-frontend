@@ -213,6 +213,7 @@ const Register: React.FC<RegisterInterface> = () => {
               })}
             </Select>
           </Col>
+
           {/* gst */}
           <text className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
             GST Number with Address
@@ -264,6 +265,9 @@ const Register: React.FC<RegisterInterface> = () => {
               onChange={(e) => setPincode(e.target.value)}
             />
           </Col>
+          {/* <text className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+            Information
+          </text> */}
         </Row>
         {/* password */}
         <div className="my-3">
@@ -337,7 +341,7 @@ const Register: React.FC<RegisterInterface> = () => {
       >
         <div className="min-w-screen min-h-screen bg-black/50 -mt-10 lg:-mt-0 px-10 flex flex-col justify-center">
           <text className="text-white text-3xl font-roboto_black">
-            Jever-Bazzar
+            Jevar-Bazzar
           </text>
           <text className="text-white text-5xl font-roboto_regular mt-5 tracking-wide leading-tight">
             Explore the world’s leading design portfolios.

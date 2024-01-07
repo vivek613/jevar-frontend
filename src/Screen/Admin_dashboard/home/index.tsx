@@ -9,6 +9,9 @@ import { Button, Card, Col, Row, Space, Switch } from "antd";
 import CardDefault from "../../../Component/Card/Card";
 import TableUser from "../Table/TableUser";
 import EditModel from "../model/paymentGraphModel";
+import JewellerEditModel from "../model/JewellerEditModel";
+import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const AdminHome = () => {
   const userdata = useSelector((state: any) => state.adminAuth);
@@ -21,13 +24,28 @@ const AdminHome = () => {
   const [paymentDetails, setPaymentDetails] = useState<any>({});
   const [openModal, setOpenModal] = React.useState(false);
   const [openModalForEdit, setOpenModalForEdit] = React.useState(false);
-
+  const [openModalForEditJeweller, setOpenModalForEditJeweller] =
+    React.useState(false);
   const [graphData, setGraphData] = useState();
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearch = (value: any) => {
+    setSearchText(value);
+  };
+  const filteredJewellerData = totalJeweller?.TotalData.filter(
+    (item: any) =>
+      item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.mobile.includes(searchText)
+  );
+
   const handleOpen = () => {
     setOpenModal((cur) => !cur);
   };
   const handleOpenForPayment = () => {
     setOpenModalForEdit(false);
+  };
+  const handleOpenForJeweller = () => {
+    setOpenModalForEditJeweller(false);
   };
 
   const getAllUser = async () => {
@@ -86,6 +104,10 @@ const AdminHome = () => {
     setOpenModalForEdit(true);
     setGraphData(data);
   };
+  const handleEditForJeweller = (data: any) => {
+    setOpenModalForEditJeweller(true);
+    setGraphData(data);
+  };
   const handleSubmit = async (values: any) => {
     console.log("values", values);
 
@@ -96,6 +118,29 @@ const AdminHome = () => {
         toast.success(response?.data?.message);
         setOpenModalForEdit(false);
         getSalesUser();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handleSubmitForJeweller = async (values: any) => {
+    console.log("values", values);
+
+    await API.mainUser_disable(
+      values.id,
+      userdata.user.token,
+      values,
+
+      dispatch
+    )
+      .then((response) => {
+        if (response?.status == 200) {
+          getJewellerUser();
+          toast.success(response.data.message);
+          setOpenModalForEditJeweller(false);
+        } else {
+          toast.error("Something went wrong!");
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -203,6 +248,15 @@ const AdminHome = () => {
             handleSwitchChangeForJeweller(checked, record);
           }}
         />
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (record: any) => (
+        <Space size="middle">
+          <Button onClick={() => handleEditForJeweller(record)}>Edit</Button>
+        </Space>
       ),
     },
   ];
@@ -348,8 +402,15 @@ const AdminHome = () => {
         </div>
         <div className="mt-3">
           <h2 className="font-bold text-lg">Jewellery Register</h2>
+          <div className="mb-2 w-[40%]">
+            <Input
+              placeholder="Search by name or mobile number"
+              prefix={<SearchOutlined />}
+              onChange={(e) => handleSearch(e.target.value)}
+            />
+          </div>
           <TableUser
-            TableData={totalJeweller?.TotalData}
+            TableData={filteredJewellerData}
             columns={columnsForJewellery}
           />
         </div>
@@ -362,11 +423,19 @@ const AdminHome = () => {
           data={graphData}
         />
       )}
-      {openModalForEdit && paymentDetails && (
+      {openModalForEdit && (
         <EditModel
           open={openModalForEdit}
           handleOpen={() => handleOpenForPayment()}
           handleSubmit={handleSubmit}
+          data={graphData}
+        />
+      )}
+      {openModalForEditJeweller && (
+        <JewellerEditModel
+          open={openModalForEditJeweller}
+          handleOpen={() => handleOpenForJeweller()}
+          handleSubmit={handleSubmitForJeweller}
           data={graphData}
         />
       )}

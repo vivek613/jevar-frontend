@@ -26,7 +26,7 @@ const DashboardHeader: React.FC<DashboardHeaderInterface> = () => {
       <div className="w-full h-14 bg-primary drop-shadow-xl flex items-center justify-between px-5 sticky top-0 z-50">
         <div className="flex items-center">
           <text className="ml-4 text-lg text-white font-roboto_bold tracking-wider">
-            Jever-Bazzar Sales
+            Jevar-Bazzar Sales
           </text>
         </div>
         <div className="flex items-center">

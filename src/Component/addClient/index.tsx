@@ -37,7 +37,7 @@ const AddClient = (props: any) => {
 
   const addProduct = async (data: any) => {
     const body = {
-      user_id: acHave == "have" ? data.id : data.user.id,
+      user_id: data,
       purchase_from: pName,
       product_type: jType,
       huid: huide,
@@ -239,11 +239,12 @@ const AddClient = (props: any) => {
     setOTP("");
     setStatus("");
     setprice("");
+    setAcHave("");
   };
 
   useEffect(() => {
     resetState();
-  }, []);
+  }, [props]);
 
   return (
     <React.Fragment>
@@ -257,13 +258,13 @@ const AddClient = (props: any) => {
         <Card className="mx-auto w-full ">
           <CardHeader
             variant="gradient"
-            className="mb-4 grid h-28 place-items-center bg-primary"
+            className="mb-4 grid h-24 place-items-center bg-primary"
           >
             <Typography variant="h3" color="white" className="font-roboto_bold">
               Add Client
             </Typography>
           </CardHeader>
-          <CardBody className="flex flex-col gap-4">
+          <CardBody className="flex flex-col gap-2">
             <Input
               type="text"
               label="Register By"

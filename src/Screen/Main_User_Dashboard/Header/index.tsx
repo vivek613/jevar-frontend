@@ -96,7 +96,7 @@ const DashboardHeader: React.FC<DashboardHeaderInterface> = () => {
             />
           </svg>
           <text className="ml-4 text-lg text-white font-roboto_bold tracking-wider">
-            Jever-Bazzar
+            Jevar-Bazzar
           </text>
         </div>
         <div className="flex items-center">

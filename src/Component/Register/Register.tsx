@@ -246,7 +246,7 @@ const Register: React.FC<RegisterInterface> = () => {
       >
         <div className="min-w-screen min-h-screen bg-black/50 -mt-10 lg:-mt-0 px-10 flex flex-col justify-center">
           <text className="text-white text-3xl font-roboto_black">
-            Jever-Bazzar
+            Jevar-Bazzar
           </text>
           <text className="text-white text-5xl font-roboto_regular mt-5 tracking-wide leading-tight">
             Explore the world’s leading design portfolios.

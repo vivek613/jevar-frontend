@@ -785,6 +785,27 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
+  mainUser_Edit: async (id: any, token: any, body: object, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.put(
+        `${BASE_URL}/api/v1/mainUser/editJewellwer/${id}`,
+        body,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
   adminUser_Login: async (body: any, dispatch: any) => {
     dispatch(setLoader(true));
     try {

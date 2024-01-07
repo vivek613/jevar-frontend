@@ -3,28 +3,35 @@ import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
+import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { API, Image_URL } from "../../../Service";
 import { toast } from "react-toastify";
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
 const heading = ["profile", "mobile", "email", ""];
-
 interface HomeHomeDashInterface {}
 
 const HomeDash: React.FC<HomeHomeDashInterface> = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const userdata = useSelector((state: any) => state.mainAuth);
-  const [user, setuser] = useState(userdata.user.user);
   const [customer, setCustomer] = useState<Array<any>>([]);
   const [product, setProduct] = React.useState([]);
-  const [productPay, setProductPay] = useState(0);
+  const [userAmount, setUserAmount] = useState({
+    lastMonth: 0,
+    currentMonth: 0,
+  });
+  const [searchText, setSearchText] = useState("");
 
+  const handleSearch = (value: any) => {
+    setSearchText(value);
+  };
+  const filteredCustomerData = customer.filter(
+    (item: any) =>
+      item.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.mobile.includes(searchText)
+  );
   useEffect(() => {
     getCustomer();
-    getProductPayment();
   }, []);
 
   const loadScript = (src: any) => {
@@ -56,6 +63,10 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
           console.log("repsoe", response);
           setCustomer(response.data.response);
           setProduct(response.data?.ProductCount);
+          setUserAmount({
+            lastMonth: response.data?.lastMonthAmount,
+            currentMonth: response.data?.totalAmount,
+          });
         } else {
           toast.error("Something went wrong!");
         }
@@ -66,28 +77,8 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
   };
 
   console.log("user", userdata);
-  const getProductPayment = async () => {
-    await API.mainUser_fetchProductPayment(userdata.user.token, dispatch)
-      .then((response) => {
-        const data = response?.data.response.filter((item: any, index: any) => {
-          return (
-            item.jeweller_id == userdata.user.user.id && item.is_pay == false
-          );
-        });
-        const payAmount = data.map((item: any, index: any) => {
-          return item.pay_amount;
-        });
-        const sum = payAmount.reduce((accumulator: any, currentValue: any) => {
-          return accumulator + currentValue;
-        }, 0);
-        setProductPay(sum);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
-  const payNow = (data: any) => {
+  const payNow = (data: any, type: boolean) => {
     API.mainUser_service_order(userdata.user.token, data, dispatch)
       .then((response) => {
         const { amount, order_id, currency } = response?.data;
@@ -100,17 +91,20 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
           image: {},
           order_id: order_id,
           handler: async (response: any) => {
-            const datas = {
-              jeweller_id: userdata.user.user.id,
+            const Payment = {
+              totalPayment: type ? 0 : userAmount.currentMonth,
+              last_month_payment: type ? userAmount.lastMonth : 0,
             };
-            await API.mainUser_editProductPayment(
+
+            await API.mainUser_Edit(
+              userdata.user.user.id,
               userdata.user.token,
-              datas,
+              Payment,
               dispatch
             )
               .then((response) => {
                 // alert(response?.data.message);
-                getProductPayment();
+                getCustomer();
               })
               .catch((err) => {
                 console.log(err);
@@ -149,7 +143,7 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
     <div className="w-full h-auto">
       <div className="flex items-center justify-center bg-primary/30 py-6 mt-3 mx-5 rounded-full shadow-sm">
         <p className="lg:text-2xl tracking-wider font-roboto_medium text-primary">
-          {user.name}
+          {userdata.user.user.name}
         </p>
       </div>
       <div className="lg:flex mb-5 sm:mx-10">
@@ -208,32 +202,71 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
                 </p>
                 <Button
                   onClick={() => {
-                    if (userdata?.user?.user?.totalPayment != 0) {
+                    if (userAmount.currentMonth != 0) {
                       const data = {
-                        amount: userdata?.user?.user?.totalPayment,
+                        amount: userAmount.currentMonth,
                       };
 
-                      payNow(data);
+                      payNow(data, true);
                     } else {
                       alert("you have not payable amount.");
                     }
                   }}
                   className="bg-primary text-lg px-8 py-1 mt-3 font-roboto_medium"
                 >
-                  ₹ {convert(userdata?.user?.user?.totalPayment)}
+                  ₹ {convert(userAmount.currentMonth)}
                 </Button>
               </div>
-              {/* <div className="w-full border-2 p-2 mr-5">
-                <Line options={options} data={data} />
-              </div>
-              <div className="w-full border-2 p-2 mr-5">
-                <Line options={options} data={data} />
-              </div> */}
+              {userAmount.lastMonth > 0 && (
+                <div className="border-2 h-64 flex flex-col items-center justify-center w-full mr-5">
+                  <div className="p-6 bg-primary/20 shadow-lg rounded-full">
+                    {/* <FaUser className="text-2xl text-primary" /> */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-8 h-8 text-primary"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM9 7.5A.75.75 0 009 9h1.5c.98 0 1.813.626 2.122 1.5H9A.75.75 0 009 12h3.622a2.251 2.251 0 01-2.122 1.5H9a.75.75 0 00-.53 1.28l3 3a.75.75 0 101.06-1.06L10.8 14.988A3.752 3.752 0 0014.175 12H15a.75.75 0 000-1.5h-.825A3.733 3.733 0 0013.5 9H15a.75.75 0 000-1.5H9z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <p className="mt-3 uppercase tracking-wider font-roboto_regular text-primary">
+                    last month bill
+                  </p>
+                  <Button
+                    onClick={() => {
+                      if (userAmount.lastMonth != 0) {
+                        const data = {
+                          amount: userAmount.lastMonth,
+                        };
+
+                        payNow(data, false);
+                      } else {
+                        alert("you have not payable amount.");
+                      }
+                    }}
+                    className="bg-primary text-lg px-8 py-1 mt-3 font-roboto_medium"
+                  >
+                    ₹ {convert(userAmount.lastMonth)}
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="mt-5">
               <p className="capitalize text-2xl font-roboto_medium text-primary tracking-wide">
                 golden client
               </p>
+              <div className="mb-2 w-[40%]">
+                <Input
+                  placeholder="Search by name or mobile number"
+                  prefix={<SearchOutlined />}
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </div>
               <div className="relative overflow-x-auto border-2 sm:rounded-lg mt-5">
                 <table className="w-full text-sm text-left text-gray-500">
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -248,7 +281,7 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {customer.map((item: any, index: number) => {
+                    {filteredCustomerData.map((item: any, index: number) => {
                       const queryParams = new URLSearchParams(item).toString();
                       return (
                         <tr className="bg-white border-b hover:bg-gray-50">

@@ -38,7 +38,7 @@ const SalesLogin: React.FC<LoginInterface> = () => {
       });
   };
 
-  return <LoginComponents login={_login} />;
+  return <LoginComponents login={_login} register={"register-sales"} />;
 };
 
 export default SalesLogin;

@@ -39,7 +39,7 @@ const AdminLogin: React.FC<LoginInterface> = () => {
       });
   };
 
-  return <LoginComponents login={_login} />;
+  return <LoginComponents login={_login} register={"/"} />;
 };
 
 export default AdminLogin;

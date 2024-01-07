@@ -29,7 +29,6 @@ const Index = () => {
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
         <Route path="/admin-login" element={<AdminLogin />} />
-
         <Route path="register-sales" element={<SalesRegister />} />
         <Route path="login-sales" element={<SalesLogin />} />
         <Route path="used-jewellry" element={<UsedJewellry />} />
