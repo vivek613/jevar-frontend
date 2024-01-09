@@ -67,8 +67,8 @@ function ProfileMenu() {
 
   const getUser = async () => {
     await API.normalUser_profile(
-      userdata.user.user.id,
-      userdata.user.token,
+      userdata?.user.user.id,
+      userdata?.user.token,
       dispatch
     )
       .then((response) => {
@@ -90,7 +90,7 @@ function ProfileMenu() {
           {user.profile_image == undefined ? (
             <div className="w-10 h-10 flex items-center justify-center border-2 overflow-hidden rounded-full">
               <text className="text-xl font-roboto_black ">
-                {userdata.user.user.name.charAt(0)}
+                {userdata?.user.user.name.charAt(0)}
               </text>
             </div>
           ) : (
@@ -99,7 +99,7 @@ function ProfileMenu() {
               size="sm"
               alt="candice wu"
               className="border border-blue-500 p-0.5 bg-contain bg-center"
-              src={`${user.profile_image.data}`}
+              src={`${user?.profile_image.data}`}
             />
           )}
           <ChevronDownIcon

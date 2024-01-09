@@ -7,6 +7,7 @@ import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { API, Image_URL } from "../../../Service";
 import { toast } from "react-toastify";
+import ProfileEdit from "../Model/ProfileEdit";
 
 const heading = ["profile", "mobile", "email", ""];
 interface HomeHomeDashInterface {}
@@ -16,12 +17,18 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
   const userdata = useSelector((state: any) => state.mainAuth);
   const [customer, setCustomer] = useState<Array<any>>([]);
   const [product, setProduct] = React.useState([]);
+  const [profileImage, setProfileImage] = useState<any>(null);
+
+  const [openModalForEditJeweller, setOpenModalForEditJeweller] =
+    React.useState(false);
   const [userAmount, setUserAmount] = useState({
     lastMonth: 0,
     currentMonth: 0,
   });
   const [searchText, setSearchText] = useState("");
-
+  const handleOpenForJeweller = () => {
+    setOpenModalForEditJeweller(false);
+  };
   const handleSearch = (value: any) => {
     setSearchText(value);
   };
@@ -30,6 +37,25 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
       item.name.toLowerCase().includes(searchText.toLowerCase()) ||
       item.mobile.includes(searchText)
   );
+  const handleSubmitForJeweller = async (values: any) => {
+    const updateData = {
+      profile_image: profileImage,
+      name: values.name,
+    };
+    await API.mainUser_Edit(
+      userdata.user.user.id,
+      userdata.user.token,
+      updateData,
+      dispatch
+    )
+      .then((response) => {
+        getCustomer();
+        handleOpenForJeweller();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   useEffect(() => {
     getCustomer();
   }, []);
@@ -76,6 +102,27 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
       });
   };
 
+  const addProductImage = async (data: any) => {
+    await API.Common_add_Image(data, dispatch)
+      .then((response) => {
+        setProfileImage(response?.data?.data?.thumbnail);
+
+        toast.success(response?.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const selectBill = (event: any) => {
+    if (event) {
+      const img = event;
+
+      const data = new FormData();
+      data && data.append("image", img);
+
+      addProductImage(data);
+    }
+  };
   console.log("user", userdata);
 
   const payNow = (data: any, type: boolean) => {
@@ -141,11 +188,22 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
 
   return (
     <div className="w-full h-auto">
+      <div className="flex justify-end">
+        <Button
+          onClick={() => {
+            setOpenModalForEditJeweller(true);
+          }}
+          className="bg-primary text-base px-8 py-1 mt-3 "
+        >
+          Edit Profile
+        </Button>
+      </div>
       <div className="flex items-center justify-center bg-primary/30 py-6 mt-3 mx-5 rounded-full shadow-sm">
         <p className="lg:text-2xl tracking-wider font-roboto_medium text-primary">
           {userdata.user.user.name}
         </p>
       </div>
+
       <div className="lg:flex mb-5 sm:mx-10">
         {customer.length != 0 ? (
           <div className="w-full">
@@ -340,6 +398,15 @@ const HomeDash: React.FC<HomeHomeDashInterface> = () => {
           </div>
         )}
       </div>
+      {openModalForEditJeweller && (
+        <ProfileEdit
+          open={openModalForEditJeweller}
+          handleOpen={() => handleOpenForJeweller()}
+          handleSubmit={handleSubmitForJeweller}
+          data={userdata}
+          selectBill={selectBill}
+        />
+      )}
     </div>
   );
 };
