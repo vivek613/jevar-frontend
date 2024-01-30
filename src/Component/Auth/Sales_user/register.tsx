@@ -253,7 +253,7 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
 
           <Col span={12}>
             <Input
-              label="Bank Number"
+              label="Bank Account Number"
               color="brown"
               value={bankDeatails?.bankNumber}
               onChange={(e) =>
@@ -281,7 +281,7 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
         <div className="flex items-start justify-around mt-3">
           <div className="">
             <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
-              AadharCard image
+              AdhaarCard image
             </p>
 
             <UploadFileComponents handleUpload={onImageChange} />
@@ -345,7 +345,9 @@ const SalesRegister: React.FC<RegisterInterface> = () => {
                 city &&
                 state &&
                 pincode &&
-                password
+                password &&
+                aadharImage &&
+                pandCardImage
               ) {
                 register();
               } else {

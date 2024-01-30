@@ -13,10 +13,19 @@ import { API, Image_URL } from "../../../Service";
 import { useDispatch, useSelector } from "react-redux";
 import ImagePreview from "../../../Component/addProductForUser/imagePreview";
 import { ToastContainer, toast } from "react-toastify";
-import { setLoader } from "../../../Stores/actions/loader";
+import axios from "axios";
 
 interface CollectionInterface {}
-
+const GoldCaratType = [
+  { name: "10K", value: "price_gram_10k" },
+  { name: "14K", value: "price_gram_14k" },
+  { name: "16K", value: "price_gram_16k" },
+  { name: "18K", value: "price_gram_18k" },
+  { name: "20K", value: "price_gram_20k" },
+  { name: "21K", value: "price_gram_21k" },
+  { name: "22k", value: "price_gram_22k" },
+  { name: "24K", value: "price_gram_24k" },
+];
 const Collection: React.FC<CollectionInterface> = () => {
   const dispatch = useDispatch();
   const userdata = useSelector((state: any) => state.mainAuth);
@@ -31,6 +40,8 @@ const Collection: React.FC<CollectionInterface> = () => {
   const [image, setImage] = React.useState<any>(null);
   const [category, setCategory] = useState([]);
   const [categoryID, setCategoryID] = useState("");
+
+  const [goldCarat, setGoldCarat] = useState("");
   const [editData, setEditData] = useState<any>({});
 
   const handleOpen = () => setOpen(!open);
@@ -134,6 +145,9 @@ const Collection: React.FC<CollectionInterface> = () => {
     setCategoryID(e);
   };
 
+  const selectGoldCarat = (e: any) => {
+    setGoldCarat(e);
+  };
   const removeCollectionImage = async (body: any) => {
     await API.mainUser_deleteCollectionImage(
       userdata.user.token,
@@ -160,6 +174,23 @@ const Collection: React.FC<CollectionInterface> = () => {
       });
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("https://www.goldapi.io/api/XAU/INR", {
+          headers: {
+            "x-access-token": "goldapi-kikarls066byh-io",
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className="w-full m-5">
       {data.length != 0 ? (
@@ -217,16 +248,7 @@ const Collection: React.FC<CollectionInterface> = () => {
                     {item.product_price}
                   </p>
                 </div>
-                {/* <div
-                  onClick={() => {
-                    deleteCollection(item._id);
-                  }}
-                  className="my-3"
-                >
-                  <text className="font-roboto_medium text-red-500 text-lg">
-                    Remove Product
-                  </text>
-                </div> */}
+
                 <div className="flex items-center my-1">
                   <div
                     className="top-1 right-1 bg-white p-2 rounded-full mr-5"
@@ -314,7 +336,7 @@ const Collection: React.FC<CollectionInterface> = () => {
       {/* add collection modal */}
       <Dialog open={open} handler={handleOpen} className="py-3 px-4">
         <p className="text-center capitalize font-roboto_black text-primary text-lg">
-          add your best collection product
+          Add your Best Collection
         </p>
         <div className="border-b-2 border-b-secondry w-28 m-auto mt-2" />
         <div className="mt-5">
@@ -443,6 +465,23 @@ const Collection: React.FC<CollectionInterface> = () => {
               return (
                 <Option key={index} value={item.id} className="capitalize">
                   {item.category_name}
+                </Option>
+              );
+            })}
+          </Select>
+        </div>
+        <div className="">
+          <Select
+            variant="outlined"
+            label="Select Gold Carat"
+            color="gray"
+            onChange={selectGoldCarat}
+            value={goldCarat}
+          >
+            {GoldCaratType.map((item: any, index) => {
+              return (
+                <Option key={index} value={item.value} className="capitalize">
+                  {item.name}
                 </Option>
               );
             })}

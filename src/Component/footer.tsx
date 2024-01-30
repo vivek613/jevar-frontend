@@ -11,11 +11,11 @@ const LINKS = [
     items: ["Blog", "Newsletter", "Events", "Help center"],
   },
   {
-    title: "System",
+    title: "Partnered Jewellers",
     items: ["Login", "Register"],
   },
   {
-    title: "Sales",
+    title: "Salesperson",
     items: ["SalesLogin", "SalesRegister"],
   },
 ];
@@ -52,11 +52,11 @@ const Footer: React.FC<FooterInterface> = () => {
                           ? "/login"
                           : link == "About us"
                           ? "/about"
-                          :  link == "SalesRegister"
-                          ?"/register-sales"
+                          : link == "SalesRegister"
+                          ? "/register-sales"
                           : link == "SalesLogin"
-                          ?"/login-sales"
-                          :"/"
+                          ? "/login-sales"
+                          : "/"
                       }
                     >
                       <Typography

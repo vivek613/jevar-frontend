@@ -276,7 +276,7 @@ const AddClient = (props: any) => {
             />
             <Input
               type="text"
-              label="Purchase from"
+              label="Purchased From"
               size="lg"
               color="gray"
               value={pName}
@@ -310,7 +310,7 @@ const AddClient = (props: any) => {
               />
             </div>
             <Input
-              label="total price"
+              label="Jewellery Price"
               size="lg"
               type="text"
               color="gray"
@@ -327,9 +327,9 @@ const AddClient = (props: any) => {
               ></UploadFileComponents>
             </div>
             <div className="w-full gap-5">
-              <Select label="Select Veriants" onChange={selectHaveAccount}>
-                <Option value="have">Alredy have an account</Option>
-                <Option value="havn't">No have an account</Option>
+              <Select label="Select User Type" onChange={selectHaveAccount}>
+                <Option value="have">Old User</Option>
+                <Option value="havn't">New User</Option>
               </Select>
             </div>
             {acHave == "havn't" ? (

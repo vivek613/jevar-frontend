@@ -191,6 +191,7 @@ const Register: React.FC<RegisterInterface> = () => {
                 label="Phone Number"
                 color="brown"
                 onChange={(e) => setMobile(e.target.value)}
+                maxLength={10}
                 onBlur={mobileValidation}
               />
               {validMobile && (
@@ -203,7 +204,7 @@ const Register: React.FC<RegisterInterface> = () => {
           {/* Sales User */}
           <Col span={12}>
             <Select
-              label="Select Sales"
+              label="Select Sales Person"
               color="brown"
               onChange={(e: any) => setSelectUser(e)}
               value={selectUser}
@@ -223,6 +224,7 @@ const Register: React.FC<RegisterInterface> = () => {
               label="GST Number"
               color="brown"
               value={gst}
+              maxLength={15}
               onChange={(e) => setGst(e.target.value)}
             />
           </div>
