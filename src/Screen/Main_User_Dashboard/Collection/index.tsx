@@ -35,13 +35,17 @@ const Collection: React.FC<CollectionInterface> = () => {
   const [preview, setPreview] = React.useState("");
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [name, setname] = useState("");
-  const [price, setprice] = useState("");
+  const [productSize, setProductSize] = useState<number>(0);
+  const [makeCharge, setMakeCharge] = useState<number>(0);
+
+  const [price, setprice] = useState<number>(0);
   const [data, setdata] = useState<Array<any>>([]);
   const [image, setImage] = React.useState<any>(null);
   const [category, setCategory] = useState([]);
   const [categoryID, setCategoryID] = useState("");
 
   const [goldCarat, setGoldCarat] = useState("");
+  const [currentGoldPrice, setCurrentGoldPrice] = useState<any>({});
   const [editData, setEditData] = useState<any>({});
 
   const handleOpen = () => setOpen(!open);
@@ -78,7 +82,7 @@ const Collection: React.FC<CollectionInterface> = () => {
           handleOpen();
           setImageData([]);
           setname("");
-          setprice("");
+          setprice(0);
         } else {
           toast.error("something went wrong! hello");
         }
@@ -147,6 +151,8 @@ const Collection: React.FC<CollectionInterface> = () => {
 
   const selectGoldCarat = (e: any) => {
     setGoldCarat(e);
+    const priceData = productSize * currentGoldPrice[goldCarat];
+    setprice(priceData);
   };
   const removeCollectionImage = async (body: any) => {
     await API.mainUser_deleteCollectionImage(
@@ -183,7 +189,7 @@ const Collection: React.FC<CollectionInterface> = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(response.data);
+        setCurrentGoldPrice(response.data);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -191,6 +197,7 @@ const Collection: React.FC<CollectionInterface> = () => {
 
     fetchData();
   }, []);
+  console.log("currentGoldPrice", currentGoldPrice[goldCarat], goldCarat);
   return (
     <div className="w-full m-5">
       {data.length != 0 ? (
@@ -200,7 +207,7 @@ const Collection: React.FC<CollectionInterface> = () => {
               handleOpen();
               setEditData({});
               setname("");
-              setprice("");
+              setprice(0);
             }}
             className="w-44 h-[15rem] mr-2 border-2 border-black/30 border-dashed p-5 cursor-pointer rounded-xl flex flex-col justify-center items-center"
           >
@@ -323,7 +330,7 @@ const Collection: React.FC<CollectionInterface> = () => {
               handleOpen();
               setEditData({});
               setname("");
-              setprice("");
+              setprice(0);
             }}
             className="py-12 px-24 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer -mt-24"
           >
@@ -470,7 +477,7 @@ const Collection: React.FC<CollectionInterface> = () => {
             })}
           </Select>
         </div>
-        <div className="">
+        <div className="mt-5">
           <Select
             variant="outlined"
             label="Select Gold Carat"
@@ -491,6 +498,47 @@ const Collection: React.FC<CollectionInterface> = () => {
           <div className="mt-5 mb-5 w-full">
             <Input
               variant="outlined"
+              label="product size (gm)"
+              color="gray"
+              type="number"
+              value={productSize}
+              onChange={(e) => {
+                setProductSize(Number(e.target.value));
+                const priceData =
+                  Number(e.target.value) * currentGoldPrice[goldCarat];
+                setprice(priceData);
+              }}
+            />
+          </div>
+          <div className="mt-5 mb-5 w-full ml-3">
+            <Input
+              variant="outlined"
+              label="Making Charge"
+              color="gray"
+              type="number"
+              value={makeCharge}
+              onChange={(e) => {
+                setMakeCharge(Number(e.target.value));
+                const priceData =
+                  Number(e.target.value) * currentGoldPrice[goldCarat] +
+                  productSize;
+                setprice(priceData);
+              }}
+            />
+          </div>
+          <div className="mt-5 mb-5 w-full ml-5">
+            <Input
+              variant="outlined"
+              label="Cuurent Gold price"
+              value={currentGoldPrice[goldCarat]}
+              disabled
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="mt-5 mb-5 w-full">
+            <Input
+              variant="outlined"
               label="product Name"
               color="gray"
               value={name}
@@ -500,10 +548,11 @@ const Collection: React.FC<CollectionInterface> = () => {
           <div className="mt-5 mb-5 w-full ml-5">
             <Input
               variant="outlined"
-              label="product price"
+              label="Total Selling price"
               color="gray"
+              type="number"
               value={price}
-              onChange={(e) => setprice(e.target.value)}
+              onChange={(e) => setprice(Number(e.target.value))}
             />
           </div>
         </div>
@@ -516,6 +565,10 @@ const Collection: React.FC<CollectionInterface> = () => {
                   id: editData._id,
                   collection_name: name,
                   product_price: price,
+                  product_make_charge: makeCharge,
+                  product_size: productSize,
+                  product_carat: goldCarat,
+                  current_gold_price: currentGoldPrice[goldCarat],
                 };
                 editCollection(data);
                 setEditData({});
@@ -525,6 +578,10 @@ const Collection: React.FC<CollectionInterface> = () => {
                     collection_name: name,
                     category_id: categoryID,
                     product_price: price,
+                    product_make_charge: makeCharge,
+                    product_size: productSize,
+                    product_carat: goldCarat,
+                    current_gold_price: currentGoldPrice[goldCarat],
                     jeweller_id: userdata.user.user.id,
                     jeweller_name: userdata.user.user.name,
                     jeweller_address: userdata.user.user.address,
