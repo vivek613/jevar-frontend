@@ -17,14 +17,8 @@ import axios from "axios";
 
 interface CollectionInterface {}
 const GoldCaratType = [
-  { name: "10K", value: "price_gram_10k" },
-  { name: "14K", value: "price_gram_14k" },
-  { name: "16K", value: "price_gram_16k" },
-  { name: "18K", value: "price_gram_18k" },
-  { name: "20K", value: "price_gram_20k" },
-  { name: "21K", value: "price_gram_21k" },
-  { name: "22k", value: "price_gram_22k" },
-  { name: "24K", value: "price_gram_24k" },
+  { name: "22k", value: "price22k" },
+  { name: "24K", value: "price24k" },
 ];
 const Collection: React.FC<CollectionInterface> = () => {
   const dispatch = useDispatch();
@@ -35,12 +29,11 @@ const Collection: React.FC<CollectionInterface> = () => {
   const [preview, setPreview] = React.useState("");
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [name, setname] = useState("");
-  const [productSize, setProductSize] = useState<number>(0);
-  const [makeCharge, setMakeCharge] = useState<number>(0);
+  const [productSize, setProductSize] = useState<string>("");
+  const [makeCharge, setMakeCharge] = useState<string>("");
 
   const [price, setprice] = useState<number>(0);
   const [data, setdata] = useState<Array<any>>([]);
-  const [image, setImage] = React.useState<any>(null);
   const [category, setCategory] = useState([]);
   const [categoryID, setCategoryID] = useState("");
 
@@ -151,7 +144,7 @@ const Collection: React.FC<CollectionInterface> = () => {
 
   const selectGoldCarat = (e: any) => {
     setGoldCarat(e);
-    const priceData = productSize * currentGoldPrice[goldCarat];
+    const priceData = Number(productSize) * currentGoldPrice[goldCarat]?.today;
     setprice(priceData);
   };
   const removeCollectionImage = async (body: any) => {
@@ -179,25 +172,24 @@ const Collection: React.FC<CollectionInterface> = () => {
         console.log(err);
       });
   };
-
+  const getGold = async () => {
+    await API.get_gold_price("ahmedabad", dispatch)
+      .then((response) => {
+        setCurrentGoldPrice(response?.data?.data?.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  // const apiKey=https://service.upstox.com/scrip-details-fundamentals/v1/gold-price/overview?city=ahmedabad
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("https://www.goldapi.io/api/XAU/INR", {
-          headers: {
-            "x-access-token": "goldapi-kikarls066byh-io",
-            "Content-Type": "application/json",
-          },
-        });
-        setCurrentGoldPrice(response.data);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-
-    fetchData();
+    getGold();
   }, []);
-  console.log("currentGoldPrice", currentGoldPrice[goldCarat], goldCarat);
+  console.log(
+    "currentGoldPrice",
+    currentGoldPrice[goldCarat]?.today,
+    goldCarat
+  );
   return (
     <div className="w-full m-5">
       {data.length != 0 ? (
@@ -341,7 +333,7 @@ const Collection: React.FC<CollectionInterface> = () => {
         </div>
       )}
       {/* add collection modal */}
-      <Dialog open={open} handler={handleOpen} className="py-3 px-4">
+      <Dialog open={open} handler={handleOpen} className="py-3 px-4" size="xl">
         <p className="text-center capitalize font-roboto_black text-primary text-lg">
           Add your Best Collection
         </p>
@@ -503,10 +495,11 @@ const Collection: React.FC<CollectionInterface> = () => {
               type="number"
               value={productSize}
               onChange={(e) => {
-                setProductSize(Number(e.target.value));
+                setProductSize(e.target.value);
                 const priceData =
-                  Number(e.target.value) * currentGoldPrice[goldCarat];
-                setprice(priceData);
+                  Number(e.target.value) * currentGoldPrice[goldCarat]?.today +
+                  makeCharge;
+                setprice(Number(priceData));
               }}
             />
           </div>
@@ -518,11 +511,11 @@ const Collection: React.FC<CollectionInterface> = () => {
               type="number"
               value={makeCharge}
               onChange={(e) => {
-                setMakeCharge(Number(e.target.value));
+                setMakeCharge(e.target.value);
                 const priceData =
-                  Number(e.target.value) * currentGoldPrice[goldCarat] +
-                  productSize;
-                setprice(priceData);
+                  Number(e.target.value) +
+                  currentGoldPrice[goldCarat]?.today * Number(productSize);
+                setprice(Number(priceData));
               }}
             />
           </div>
@@ -530,7 +523,7 @@ const Collection: React.FC<CollectionInterface> = () => {
             <Input
               variant="outlined"
               label="Cuurent Gold price"
-              value={currentGoldPrice[goldCarat]}
+              value={currentGoldPrice[goldCarat]?.today}
               disabled
             />
           </div>
@@ -568,7 +561,7 @@ const Collection: React.FC<CollectionInterface> = () => {
                   product_make_charge: makeCharge,
                   product_size: productSize,
                   product_carat: goldCarat,
-                  current_gold_price: currentGoldPrice[goldCarat],
+                  current_gold_price: currentGoldPrice[goldCarat]?.today,
                 };
                 editCollection(data);
                 setEditData({});
@@ -581,7 +574,7 @@ const Collection: React.FC<CollectionInterface> = () => {
                     product_make_charge: makeCharge,
                     product_size: productSize,
                     product_carat: goldCarat,
-                    current_gold_price: currentGoldPrice[goldCarat],
+                    current_gold_price: currentGoldPrice[goldCarat]?.today,
                     jeweller_id: userdata.user.user.id,
                     jeweller_name: userdata.user.user.name,
                     jeweller_address: userdata.user.user.address,

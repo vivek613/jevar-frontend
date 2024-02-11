@@ -992,6 +992,25 @@ export const API = {
     }
   },
 
+  get_gold_price: async (city: any, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+      };
+      const data = await axios.get(
+        `${BASE_URL}/api/v1/mainUser/get_gold_price?city=${city}`,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
   salesUser_get: async (dispatch: any) => {
     dispatch(setLoader(true));
     try {
