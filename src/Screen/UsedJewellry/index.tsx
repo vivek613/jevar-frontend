@@ -146,9 +146,9 @@ const UsedJewellry: React.FC<UsedJewellrInterface> = () => {
         // onClick={() => {onNavigate()}}
         className="flex flex-wrap justify-center lg:justify-start 2xl:w-full h-[87vh] lg:h-[41rem] 2xl:h-[85vh] scrollbar overflow-scroll lg:mt-6 my-5"
       >
-        {data.length != 0 ? (
+        {data?.length != 0 ? (
           <>
-            {data.map((item, index) => {
+            {data?.map((item, index) => {
               const queryParams = new URLSearchParams(item).toString();
               return (
                 <div
