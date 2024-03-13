@@ -257,16 +257,16 @@ const navListItems = [
     icon: MdPrivacyTip,
     route: "/privacy-policy",
   },
-  {
-    label: "Terms & Condition",
-    icon: MdPrivacyTip,
-    route: "/terms-condition",
-  },
-  {
-    label: "Buy Service",
-    icon: HiShoppingBag,
-    route: "/service",
-  },
+  // {
+  //   label: "Terms & Condition",
+  //   icon: MdPrivacyTip,
+  //   route: "/terms-condition",
+  // },
+  // {
+  //   label: "Buy Service",
+  //   icon: HiShoppingBag,
+  //   route: "/service",
+  // },
 ];
 
 function NavList() {
