@@ -260,7 +260,7 @@ const navListItems = [
   {
     label: "Career",
     icon: MdPrivacyTip,
-    route: "/Career",
+    route: "/career",
   },
   // {
   //   label: "Terms & Condition",
