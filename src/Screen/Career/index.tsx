@@ -1,9 +1,11 @@
 import React from "react";
 import { carrerList } from "../../utils/Utils";
-
+import {useNavigate } from "react-router-dom";
 const Career = () => {
+  const navigate = useNavigate();
+  console.log("Apply button clicked!",carrerList);
     const handleApplyButtonClick = () => {
-        console.log("Apply button clicked!");
+        navigate("/add-career");
       };
   return (
     <div>

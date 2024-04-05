@@ -1,5 +1,7 @@
 import React from "react";
 import about from "../../Assets/about.jpg";
+import PersonProfileCard from "../../Component/PersonProfileCard";
+// Import the component for person profile card
 
 const About = () => {
   return (
@@ -77,6 +79,19 @@ const About = () => {
               </p>
             </div>
           </div>
+        </div>
+        <div className="flex justify-between mx-10 mb-30 my-10">
+          <PersonProfileCard
+            name="John Doe"
+            occupation="Jewelry Designer"
+            imageSrc="https://randomuser.me/api/portraits/men/1.jpg"
+          />
+          <div style={{ width: "10px" }} />
+          <PersonProfileCard
+            name="Jane Smith"
+            occupation="Gemologist"
+            imageSrc="https://randomuser.me/api/portraits/women/2.jpg"
+          />
         </div>
       </div>
     </div>
