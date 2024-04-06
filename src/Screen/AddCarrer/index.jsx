@@ -62,7 +62,7 @@ const AddCarrer = () => {
       const data = new FormData();
       data && data.append("image", img);
       console.log("data", data.get("image"));
-      addProductImage(data.get("image"), 0);
+      addProductImage(data, 2);
     }
   };
   return (
