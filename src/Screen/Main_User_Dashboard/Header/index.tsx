@@ -56,6 +56,17 @@ const DashboardHeader: React.FC<DashboardHeaderInterface> = () => {
             </span>
           </Link>
           <Link
+            to="/offer-List"
+            onClick={closeDrawer}
+            className={`mb-8 p-5 rounded-full ${
+              location.pathname == "/offer-List" ? "bg-primary/30" : ""
+            }`}
+          >
+            <span className="text-lg font-roboto_bold uppercase tracking-wider">
+   OFFER LIST
+            </span>
+          </Link>
+          <Link 
             to="/add-collection"
             onClick={closeDrawer}
             className={`mb-8 p-5 rounded-full ${

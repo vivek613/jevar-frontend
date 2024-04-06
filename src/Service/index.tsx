@@ -1351,6 +1351,11 @@ export const API = {
     });
     return data;
   },
+  fetchOffer: async () => {
+    const data = await axios.get(`${BASE_URL}/api/v1/offer/getoffer`);
+    return data;
+  },
+
   editProductBill: async (body: any, id: string, dispatch: any) => {
     // dispatch(setLoader(true));
     try {
