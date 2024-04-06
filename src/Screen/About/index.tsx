@@ -1,7 +1,6 @@
 import React from "react";
 import about from "../../Assets/about.jpg";
 import PersonProfileCard from "../../Component/PersonProfileCard";
-// Import the component for person profile card
 
 const About = () => {
   return (
