@@ -18,9 +18,7 @@ const Head = ["title", "description", "image", "Action"];
 export function Offer_List() {
   const [offers, setOffers] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  // const [offerDetails, setOfferDetails] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
-  // const [offerDetails, setOfferDetails] = useState<{ title: string; description: string; imageSrc: string; } | undefined>(undefined);
   
   const [offerDetails, setOfferDetails] = useState<{ _id: string; title: string; description: string; imageSrc: string; } | undefined>(undefined);
   useEffect(() => {
@@ -41,9 +39,9 @@ console.log("off",offerDetails);
     try {
       const response = await API.fetchOfferById(id);
       console.log("response.data",response.data);
-      setOfferDetails(response.data.data); // Set offer details from API response
-      setIsEditMode(true); // Set edit mode
-      setShowModal(true); // Open modal
+      setOfferDetails(response.data.data); 
+      setIsEditMode(true);
+      setShowModal(true); 
     } catch (error) {
       console.error("Error fetching offer details:", error);
     }
@@ -97,7 +95,6 @@ console.log("off",offerDetails);
             <div className="w-full md:w-72">
               <Input
                 label="Search"
-                // icon={<MagnifyingGlassIcon className="h-5 w-5" />}
               />
             </div>
             <Button
