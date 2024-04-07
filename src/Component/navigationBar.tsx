@@ -20,8 +20,9 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/outline";
 import { HiShoppingBag } from "react-icons/hi";
-import { MdPrivacyTip } from "react-icons/md";
+import { MdPrivacyTip,MdLocalOffer } from "react-icons/md";
 import Login from "./Auth/normal_user/login";
+
 import Register from "./Auth/normal_user/register";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -287,7 +288,7 @@ function NavList() {
             className="font-normal"
           >
             <MenuItem className="flex items-center gap-2 lg:rounded-full">
-              {React.createElement(MdPrivacyTip, { className: "h-[18px] w-[18px]" })}{" "}
+              {React.createElement(MdLocalOffer, { className: "h-[18px] w-[18px]" })}{" "}
               {"Offers"}
             </MenuItem>
           </Typography>
