@@ -34,13 +34,13 @@ const About = () => {
           </svg>
           <div className="w-24 border-t-2 border-primary/50"></div>
         </div>
-        <div className="mx-5 md:mx-10 pt-5 flex flex-col md:flex-row items-center">
+        <div className="mx-5  md:mx-10 pt-5 flex flex-col md:flex-row items-center">
           <img
             src={about}
             alt=""
             className="w-full md:w-[28rem] rounded-lg shadow-2xl shadow-gray-500 mb-5 md:mb-0"
           />
-          <div className="w-full md:max-w-3xl bg-gray-100 rounded-lg shadow-lg p-6">
+          <div className="w-full md:max-w-3xl bg-gray-100 rounded-lg shadow-lg mr-5 ml-5 p-6">
             <p className="leading-relaxed text-lg font-roboto_regular">
               Welcome to Jevar Bazaar, the ultimate destination for all your
               jewelry needs. We are a one-stop solution, offering a wide range
