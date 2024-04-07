@@ -1355,7 +1355,52 @@ export const API = {
     const data = await axios.get(`${BASE_URL}/api/v1/offer/getoffer`);
     return data;
   },
-
+  fetchOfferById: async (id:string) => {
+    const data = await axios.get(`${BASE_URL}/api/v1/offer/getoffer/${id}`);
+    return data;
+  },
+  editOffer: async (id:string ,body:any) => {
+    try {
+      const headers = {
+        "content-type": "application/json",
+      };
+      const data = await axios.post(
+        `${BASE_URL}/api/v1/offer/edit/${id}`,
+        body,
+        {
+          headers: headers,
+        }
+        );
+        return data;
+    } catch (error) {
+      console.log(error);
+    }
+   
+  },
+  addOffers: async (body: any, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+      };
+      const data = await axios.post(
+        `${BASE_URL}/api/v1/offer/add`,
+        body,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
+  deleteOffer: async (id: string) => {
+    const data = await axios.delete(`${BASE_URL}/api/v1/offer/delete/${id}`);
+    return data;
+  },
   editProductBill: async (body: any, id: string, dispatch: any) => {
     // dispatch(setLoader(true));
     try {
