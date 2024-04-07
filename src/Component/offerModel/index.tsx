@@ -3,7 +3,7 @@ import { Dialog, Card, CardHeader, CardBody, CardFooter, Typography, Input, Butt
 import { API } from "../../Service";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import UploadFileComponents from "../Upload/UploadFile";
+// import UploadFileComponents from "../Upload/UploadFile";
 
 interface OfferModalProps {
   open: boolean;
@@ -34,32 +34,37 @@ const OfferModal: React.FC<OfferModalProps> = ({ open, handleOpen, handleClose, 
   }, [offerDetails]);
 
   const handleApply = async () => {
-    // Validate input fields
-    if (!title || !description) {
+    if (!title || !description || !imageSrc) {
       toast.error("Please fill out all fields.");
       return;
     }
-
+  
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
+  
     if (image) {
-      formData.append("image", image); // Append image data to formData if it exists
-    }
+      formData.append("image", image); 
+      formData.append("image", imageSrc);
 
+    }
+    const db= {
+      title:title,description:description,imageSrc:imageSrc
+    }
+  console.log(image,imageSrc,formData);
     try {
       if (offerDetails) {
-      
+        // Editing existing offer
         await API.editOffer(offerDetails._id, formData);
         toast.success("Offer updated successfully");
       } else {
-
-        await API.addOffers(formData, dispatch);
+        // Creating new offer
+        await API.addOffers(db, dispatch);
         toast.success("Offer added successfully");
       }
       setTitle("");
       setDescription("");
-      setImage(null); // Reset image state
+      setImage(null); 
       setImageSrc("");
       handleClose();
     } catch (error) {
@@ -69,7 +74,6 @@ const OfferModal: React.FC<OfferModalProps> = ({ open, handleOpen, handleClose, 
   };
 
   const handleCancel = () => {
-    // Logic for canceling the changes
     setTitle("");
     setDescription("");
     setImage(null);
@@ -78,9 +82,8 @@ const OfferModal: React.FC<OfferModalProps> = ({ open, handleOpen, handleClose, 
   };
 
   const onImageChange = (event: any) => {
-    // Update image state when an image is uploaded
-    setImage(event.target.files[0]); // Assuming single file upload, update accordingly if multiple files are allowed
-    setImageSrc(URL.createObjectURL(event.target.files[0])); // Set image preview URL
+    setImage(event.target.files[0]);
+    setImageSrc(URL.createObjectURL(event.target.files[0]));
   };
 
   return (

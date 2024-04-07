@@ -1397,6 +1397,27 @@ export const API = {
       dispatch(setLoader(false));
     }
   },
+  addCarrer: async (token: any,body: any, dispatch: any) => {
+    dispatch(setLoader(true));
+    try {
+      const headers = {
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+      const data = await axios.post(
+        `${BASE_URL}/api/v1/career/add`,
+        body,
+        {
+          headers: headers,
+        }
+      );
+      dispatch(setLoader(false));
+      return data;
+    } catch (err) {
+      console.log(err);
+      dispatch(setLoader(false));
+    }
+  },
   deleteOffer: async (id: string) => {
     const data = await axios.delete(`${BASE_URL}/api/v1/offer/delete/${id}`);
     return data;

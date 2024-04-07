@@ -91,7 +91,7 @@ console.log("off",offerDetails);
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
               These are details about the last transactions
-            </Typography>,
+            </Typography>
           </div>
           <div className="flex w-full shrink-0 gap-2 md:w-max">
             <div className="w-full md:w-72">

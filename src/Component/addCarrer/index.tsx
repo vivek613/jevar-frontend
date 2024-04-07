@@ -1,5 +1,17 @@
 import React, { useState } from "react";
-import { Dialog, Card, CardHeader, CardBody, CardFooter, Typography, Input, Button } from "@material-tailwind/react";
+import {
+  Dialog,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Input,
+  Button,
+} from "@material-tailwind/react";
+import { API } from "../../Service";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 interface AddCarrerProps {
   open: boolean;
@@ -7,19 +19,51 @@ interface AddCarrerProps {
   handleClose: () => void;
 }
 
-const AddCarrer: React.FC<AddCarrerProps> = ({ open, handleOpen, handleClose }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+const AddCarrer: React.FC<AddCarrerProps> = ({
+  open,
+  handleOpen,
+  handleClose,
+}) => {
+  const dispatch = useDispatch();
+  const userdata = useSelector((state: any) => state.mainAuth);
+  const [name, setName] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [experience, setExperience] = useState("");
+  const [image, setImage] = useState(null);
   const [imageSrc, setImageSrc] = useState("");
+  const [validationError, setValidationError] = useState("");
+  const handleApply = async () => {
+    if (!name || !mobileNo || !email || !address || !experience || !image) {
+      setValidationError("Please fill out all fields."); // Set validation error message
+      return;
+    }
 
-  const handleApply = () => {
-    // Logic for applying the changes
+    const db = {
+      name: name,
+      mobile_no: mobileNo,
+      email: email,
+      address: address,
+      experience: experience,
+      resume: imageSrc,
+    };
+    try {
+      await API.addCarrer(userdata.user.token, db, dispatch);
+      toast.success("Offer added successfully");
+    } catch (error) {
+      console.error(error);
+    }
     handleClose();
   };
 
   const handleCancel = () => {
-    // Logic for canceling the changes
     handleClose();
+  };
+
+  const onImageChange = (event: any) => {
+    setImage(event.target.files[0]);
+    setImageSrc(URL.createObjectURL(event.target.files[0]));
   };
 
   return (
@@ -41,29 +85,55 @@ const AddCarrer: React.FC<AddCarrerProps> = ({ open, handleOpen, handleClose }) 
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
           <Input
-            label="Title"
+            label="Name"
             size="lg"
             color="gray"
             required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
           <Input
-            label="Description"
+            label="Mobile Number"
             size="lg"
             color="gray"
             required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={mobileNo}
+            onChange={(e) => setMobileNo(e.target.value)}
           />
           <Input
-            label="Image Source"
+            label="Email"
             size="lg"
             color="gray"
             required
-            value={imageSrc}
-            onChange={(e) => setImageSrc(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
+          <Input
+            label="Address"
+            size="lg"
+            color="gray"
+            required
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+          <Input
+            label="Experience"
+            size="lg"
+            color="gray"
+            required
+            type="number"
+            value={experience}
+            onChange={(e) => setExperience(e.target.value)}
+          />
+          <div className="mb-8">
+            <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
+              Resume
+            </p>
+            <input type="file" onChange={onImageChange} />
+          </div>
+          {validationError && (
+            <p className="text-red-500 text-sm">{validationError}</p>
+          )}
         </CardBody>
         <CardFooter className="pt-0">
           <Button
