@@ -22,7 +22,7 @@ const UploadFileComponents: React.FC<UploadInterface> = ({
     },
     beforeUpload: (file) => {
       setFileList([file]);
-      console.log("file", file);
+
       handleUpload(file);
       return false;
     },
