@@ -125,34 +125,34 @@ const AddCarrer: React.FC<AddCarrerProps> = ({
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
           />
-          <div className="mb-8">
+          <div className="mb-4">
             <p className="font-roboto_medium text-[0.900rem] sm:text-base text-blue uppercase ml-5 lg:ml-0">
               Resume
             </p>
             <input type="file" onChange={onImageChange} />
           </div>
           {validationError && (
-            <p className="text-red-500 text-sm">{validationError}</p>
+            <p className="text-red-500 text-s">{validationError}</p>
           )}
         </CardBody>
-        <CardFooter className="pt-0">
-          <Button
-            variant="gradient"
-            onClick={handleApply}
-            fullWidth
-            className="bg-secondry"
-          >
-            Apply
-          </Button>
-          <Button
-            variant="text"
-            onClick={handleCancel}
-            fullWidth
-            className="mt-4 text-blue-gray-500"
-          >
-            Cancel
-          </Button>
-        </CardFooter>
+        <CardFooter className="pt-0 flex justify-between">
+  <Button
+    variant="gradient"
+    onClick={handleApply}
+    fullWidth
+    className="bg-secondry"
+  >
+    Apply
+  </Button>
+  <Button
+    variant="text"
+    onClick={handleCancel}
+    fullWidth
+    className="text-blue-gray-500 bg-white"
+  >
+    Cancel
+  </Button>
+</CardFooter>
       </Card>
     </Dialog>
   );
