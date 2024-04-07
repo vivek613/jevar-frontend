@@ -1355,6 +1355,7 @@ export const API = {
     const data = await axios.get(`${BASE_URL}/api/v1/offer/getoffer`);
     return data;
   },
+
   fetchOfferById: async (id:string) => {
     const data = await axios.get(`${BASE_URL}/api/v1/offer/getoffer/${id}`);
     return data;
