@@ -19,6 +19,8 @@ import SalesLogin from "../Component/Auth/Sales_user/login";
 import SalesRegister from "../Component/Auth/Sales_user/register";
 import AdminLogin from "../Component/Auth/admin/login";
 import AdminDashboard from "./Admin_dashboard";
+import Career from "./Career";
+import OffersPage from "./OffersPage";
 
 const Index = () => {
   return (
@@ -48,6 +50,8 @@ const Index = () => {
         <Route path="terms-condition" element={<Terms />} />
         <Route path="service" element={<Service />} />
         <Route path="collection-list" element={<CollectionList />} />
+        <Route path="career" element={<Career />} />
+        <Route path="offers" element={<OffersPage/>} />
       </Routes>
     </Router>
   );

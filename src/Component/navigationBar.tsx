@@ -20,8 +20,9 @@ import {
   Bars2Icon,
 } from "@heroicons/react/24/outline";
 import { HiShoppingBag } from "react-icons/hi";
-import { MdPrivacyTip } from "react-icons/md";
+import { MdPrivacyTip,MdLocalOffer } from "react-icons/md";
 import Login from "./Auth/normal_user/login";
+
 import Register from "./Auth/normal_user/register";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -257,6 +258,11 @@ const navListItems = [
     icon: MdPrivacyTip,
     route: "/privacy-policy",
   },
+  {
+    label: "Career",
+    icon: MdPrivacyTip,
+    route: "/career",
+  },
   // {
   //   label: "Terms & Condition",
   //   icon: MdPrivacyTip,
@@ -272,6 +278,21 @@ const navListItems = [
 function NavList() {
   return (
     <ul className="mb-4 mt-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
+       <Link to={"/offers"}>
+          <Typography
+            key={'Offers'}
+            as="a"
+            href="#"
+            variant="small"
+            color="blue-gray"
+            className="font-normal"
+          >
+            <MenuItem className="flex items-center gap-2 lg:rounded-full">
+              {React.createElement(MdLocalOffer, { className: "h-[18px] w-[18px]" })}{" "}
+              {"Offers"}
+            </MenuItem>
+          </Typography>
+        </Link>
       <NavListMenu />
       {navListItems.map(({ label, icon, route }, key) => (
         <Link to={route}>

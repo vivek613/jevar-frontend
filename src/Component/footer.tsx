@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const LINKS = [
   {
     title: "Company",
-    items: ["About us", "Careers", "Press", "News"],
+    items: ["About us", "Careers", "Contact Us", "News"],
   },
   {
     title: "Resource",
